@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --font-family: "Inter", sans-serif;
+  --second-family: "Geist Mono", sans-serif;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -13,13 +18,51 @@ html {
 }
 
 body {
-  font-family: 'Inter', system-ui, sans-serif;
-  background-color: #0a0a0f;
+  background: #02030e;
   color: #ffffff;
   min-height: 100vh;
 }
 
-/* Custom scrollbar */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.header-static {
+  background: transparent;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+
+.header-scrolled {
+  backdrop-filter: blur(10px);
+  box-shadow: inset 0 1px 1px 0 rgba(132, 141, 232, 0.2), inset 0 0 12px 0 rgba(132, 141, 232, 0.08), inset 0 12px 32px 0 rgba(132, 141, 232, 0.06), inset 0 0 8px 0 rgba(132, 141, 232, 0.06), inset 0 -1px 1px 0 rgba(132, 141, 232, 0.2);
+  background: rgba(1, 1, 14, 0.8);
+}
+
+/* Header buttons with corner decorations */
+.header-btn {
+  border: 1px solid rgba(215, 218, 255, 0.12);
+  box-shadow: inset 0 1px 1px 0 rgba(132, 141, 232, 0.2), inset 0 0 12px 0 rgba(132, 141, 232, 0.08), inset 0 0 8px 0 rgba(132, 141, 232, 0.06), inset 0 0 20px 0 rgba(132, 141, 232, 0.12), inset 0 12px 20px 0 rgba(132, 141, 232, 0.06);
+  background: rgba(132, 141, 232, 0.04);
+  transition: all 0.2s ease;
+}
+
+.header-btn:hover {
+  background: rgba(132, 141, 232, 0.08);
+  border-color: rgba(215, 218, 255, 0.2);
+}
+
+.ticketBar {
+  backdrop-filter: blur(9.999870300292969px);
+  box-shadow: inset 0 1px 1px 0 rgba(132, 141, 232, 0.2), inset 0 0 12px 0 rgba(132, 141, 232, 0.08), inset 0 12px 32px 0 rgba(132, 141, 232, 0.06), inset 0 0 8px 0 rgba(132, 141, 232, 0.06), inset 0 -1px 1px 0 rgba(132, 141, 232, 0.2);
+  background: rgba(1, 1, 14, 0.1);
+}
+
+.ticketBar span {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -59,6 +102,15 @@ body {
 
 .glow-purple {
   box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+}
+
+/* Font families */
+.font-primary {
+  font-family: var(--font-family);
+}
+
+.font-mono {
+  font-family: var(--second-family);
 }
 
 /* Gradient text */
