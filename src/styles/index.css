@@ -96,7 +96,11 @@ img {
 }
 
 .animate-ticker {
-  animation: ticker 30s linear infinite;
+  animation: ticker 20s linear infinite;
+}
+
+.animate-ticker:hover {
+  animation-play-state: paused;
 }
 
 /* Glow effects */
