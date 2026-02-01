@@ -72,10 +72,10 @@ export default function DecoratedContainer({
       }}
     >
       {showDots && (
-        <>
+        <div className="hidden md:block">
           <BorderDots position="left" id={id} />
           <BorderDots position="right" id={id} />
-        </>
+        </div>
       )}
       {showCorners && (
         <>

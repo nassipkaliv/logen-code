@@ -1,4 +1,5 @@
 import DecoratedContainer from '../ui/DecoratedContainer'
+import { AnimatedSection, fadeInUp } from '../ui/ScrollAnimations'
 
 // Red corner for Problem badge
 function RedCorner({ className }: { className?: string }) {
@@ -19,8 +20,8 @@ function RedCorner({ className }: { className?: string }) {
 export default function SpeedGapSection() {
   return (
     <section id="speed-gap" className="relative overflow-hidden">
-      <DecoratedContainer id="speed-gap" className="min-h-[250px] pt-12 px-8">
-        <div className="flex flex-col items-start max-w-[550px] mx-auto">
+      <DecoratedContainer id="speed-gap" className="min-h-[200px] md:min-h-[250px] pt-8 md:pt-12 px-4 md:px-8">
+        <AnimatedSection variants={fadeInUp} className="flex flex-col items-start max-w-[95%] sm:max-w-[550px] mx-auto">
           {/* Problem badge with red corners */}
           <div
             className="relative mb-4"
@@ -73,7 +74,7 @@ export default function SpeedGapSection() {
           </div>
 
           {/* Main content with corners */}
-          <div className="relative pb-16">
+          <div className="relative pb-10 md:pb-16">
             {/* Bottom-left corner */}
             <svg className="absolute -bottom-[1px] -left-[1px]" width="11" height="6" viewBox="0 0 11 6" fill="none">
               <rect x="6" y="6" width="1" height="6" transform="rotate(180 6 6)" fill="white" />
@@ -86,17 +87,17 @@ export default function SpeedGapSection() {
             </svg>
 
             <div className="space-y-0">
-              <p className="font-primary text-[30px] font-medium leading-[120%] text-[#ededf8]">
+              <p className="font-primary text-[20px] sm:text-[24px] md:text-[30px] font-medium leading-[120%] text-[#ededf8]">
                 The Speed Gap
               </p>
-              <p className="font-primary text-[30px] font-medium leading-[120%]">
+              <p className="font-primary text-[20px] sm:text-[24px] md:text-[30px] font-medium leading-[120%]">
                 <span className="text-[#ededf8]">Meme markets</span>{' '}
-                <img src='/assets/img/speedbtn.png' alt='speedbtn' className="inline-block w-[32px] h-[32px] mx-1 align-middle" />
+                <img src='/assets/img/speedbtn.png' alt='speedbtn' className="inline-block w-[24px] h-[24px] md:w-[32px] md:h-[32px] mx-1 align-middle" />
                 <span className="text-[#ededf8]"> move</span>
                 <span className="text-[rgba(237,237,248,0.6)]"> in seconds</span>
                 <span className="font-mono text-[rgba(237,237,248,0.6)]">.</span>
               </p>
-              <p className="font-primary text-[30px] font-medium leading-[120%]">
+              <p className="font-primary text-[20px] sm:text-[24px] md:text-[30px] font-medium leading-[120%]">
                 <span className="text-[#ededf8]">Manual</span>
                 <span className="text-[rgba(237,237,248,0.6)]"> reactions </span>
                 <span className="text-[#ededf8]">lag behind</span>
@@ -104,7 +105,7 @@ export default function SpeedGapSection() {
               </p>
             </div>
           </div>
-        </div>
+        </AnimatedSection>
       </DecoratedContainer>
     </section>
   )
