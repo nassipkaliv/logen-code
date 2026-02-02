@@ -39,26 +39,26 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Main content area with continuous vertical lines */}
       <div className="relative">
         {/* Grid container - 1310px with continuous vertical lines */}
-        <div className="relative max-w-[1310px] mx-auto">
-          {/* Outer vertical lines - continuous from top to bottom */}
-          <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-[rgba(235,234,250,0.08)]" />
-          <div className="absolute right-0 top-0 bottom-0 w-[1px] bg-[rgba(235,234,250,0.08)]" />
+        <div className="relative max-w-[1310px] mx-auto px-0">
+          {/* Outer vertical lines - hidden on mobile */}
+          <div className="hidden sm:block absolute left-0 top-0 bottom-0 w-[1px] bg-[rgba(235,234,250,0.08)]" />
+          <div className="hidden sm:block absolute right-0 top-0 bottom-0 w-[1px] bg-[rgba(235,234,250,0.08)]" />
 
-          {/* Inner vertical lines at 40px padding - continuous from top to bottom */}
-          <div className="absolute left-[40px] top-0 bottom-0 w-[1px] bg-[rgba(235,234,250,0.08)]" />
-          <div className="absolute right-[40px] top-0 bottom-0 w-[1px] bg-[rgba(235,234,250,0.08)]" />
+          {/* Inner vertical lines - responsive positioning */}
+          <div className="hidden md:block absolute left-[40px] top-0 bottom-0 w-[1px] bg-[rgba(235,234,250,0.08)]" />
+          <div className="hidden md:block absolute right-[40px] top-0 bottom-0 w-[1px] bg-[rgba(235,234,250,0.08)]" />
 
-          {/* 40px spacer */}
-          <div className="h-[40px]" />
+          {/* Spacer - responsive */}
+          <div className="h-4 sm:h-6 md:h-[40px]" />
 
           {/* Content section with horizontal line at top */}
           <div className="relative">
             {/* Top horizontal line - full width */}
             <div className="absolute top-0 left-[-50vw] right-[-50vw] h-[1px] bg-[rgba(235,234,250,0.08)]" />
 
-            {/* L-shaped corners at top intersections (outer) */}
-            <GridCorner className="top-0 left-0" />
-            <GridCorner className="top-0 right-0 rotate-180" />
+            {/* L-shaped corners at top intersections (outer) - hidden on mobile */}
+            <GridCorner className="hidden sm:block top-0 left-0" />
+            <GridCorner className="hidden sm:block top-0 right-0 rotate-180" />
 
             {/* Content */}
             <div className="relative">
@@ -68,17 +68,17 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             {/* Bottom horizontal line - full width */}
             <div className="absolute bottom-0 left-[-50vw] right-[-50vw] h-[1px] bg-[rgba(235,234,250,0.08)]" />
 
-            {/* L-shaped corners at bottom intersections (outer) */}
-            <GridCorner className="bottom-0 left-0" />
-            <GridCorner className="bottom-0 right-0 rotate-180" />
+            {/* L-shaped corners at bottom intersections (outer) - hidden on mobile */}
+            <GridCorner className="hidden sm:block bottom-0 left-0" />
+            <GridCorner className="hidden sm:block bottom-0 right-0 rotate-180" />
 
-            {/* L-shaped corners at bottom intersections (inner) */}
-            <PlusCorner className="bottom-0 left-[36px]" />
-            <PlusCorner className="bottom-0 right-[36px]" />
+            {/* Plus corners at bottom intersections (inner) - hidden on mobile */}
+            <PlusCorner className="hidden md:block bottom-0 left-[36px]" />
+            <PlusCorner className="hidden md:block bottom-0 right-[36px]" />
           </div>
 
-          {/* Bottom spacer */}
-          <div className="h-[40px]" />
+          {/* Bottom spacer - responsive */}
+          <div className="h-4 sm:h-6 md:h-[40px]" />
         </div>
       </div>
     </div>
