@@ -1,0 +1,17 @@
+/* Custom Swiper styles for token carousel */
+
+/* Default state for all slides */
+.token-carousel .swiper-slide {
+  opacity: 0.4;
+  transition: opacity 0.3s ease;
+}
+
+/* Active slide - full opacity */
+.token-carousel .swiper-slide-active {
+  opacity: 1;
+}
+
+/* Ensure the slide content takes full height */
+.token-carousel .swiper-slide > div {
+  height: 100%;
+}

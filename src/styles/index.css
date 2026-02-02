@@ -138,3 +138,13 @@ img {
   transform: translateY(-2px);
   border-color: #3a3a4a;
 }
+
+/* Hide scrollbar for carousel */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
