@@ -80,14 +80,14 @@ export default function DashboardHeader() {
         <HeaderCorner className="hidden sm:block -top-[3px] -left-[5px]" />
         <HeaderCorner className="hidden sm:block -top-[3px] -right-[5px] -scale-x-100" />
 
-        <div className="flex items-center justify-between h-12 sm:h-14 md:h-16 px-3 sm:px-4 md:px-6">
+        <div className="relative flex items-center justify-between h-12 sm:h-14 md:h-16 px-3 sm:px-4 md:px-6">
           <Link to="/" className="flex items-center gap-1.5 sm:gap-2 md:gap-[10px] shrink-0">
             <img src="/assets/img/logo.png" alt="logo" className="w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6" />
             <span className="font-mono text-white font-semibold text-sm sm:text-sm md:text-base lg:text-lg uppercase">LOGEN</span>
           </Link>
 
-          {/* Desktop navigation */}
-          <nav className="hidden lg:flex items-center gap-5 xl:gap-[30px]">
+          {/* Desktop navigation - absolutely centered */}
+          <nav className="hidden lg:flex items-center gap-5 xl:gap-[30px] absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
             {navItems.map((item) => (
               <NavLink
                 key={item.label}

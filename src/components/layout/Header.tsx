@@ -142,7 +142,7 @@ export default function Header() {
             </HeaderButton>
 
             <HeaderButtonLink
-              to="/dashboard"
+              to="/"
               className="px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 font-primary text-[9px] sm:text-[10px] md:text-sm font-medium leading-[143%] tracking-[0.01em] text-center text-[#ebedff]"
             >
               Launch App
