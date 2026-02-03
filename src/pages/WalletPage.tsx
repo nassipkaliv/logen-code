@@ -269,10 +269,13 @@ function WithdrawModal({
 
               {/* Inner container */}
               <div
-                className="relative p-4"
+                className="relative p-4 py-[30px]"
                 style={{
                   borderRadius: '0 0 10px 10px',
                   background: '#070818',
+                  backgroundImage: 'url(/assets/img/modalcover.png)',
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
                   margin: '0 12px 12px 12px',
                 }}
               >
@@ -281,100 +284,124 @@ function WithdrawModal({
                   className="relative"
                   style={{
                     border: '1px solid rgba(235, 234, 250, 0.08)',
-                    padding: '16px',
                   }}
                 >
-                  {/* Plus corners on content border */}
-                  <PlusCorner className="top-[-6px] left-[-6px]" />
-                  <PlusCorner className="top-[-6px] right-[-6px]" />
-                  <PlusCorner className="bottom-[-6px] left-[-6px]" />
-                  <PlusCorner className="bottom-[-6px] right-[-6px]" />
-
                 {/* Token selector row */}
-                <div className="relative flex items-center gap-2 mb-6">
+                <div className="relative flex items-stretch gap-4 mb-6">
 
                   {/* Solana button */}
-                  <div
-                    className="flex items-center gap-2 px-3 py-2"
-                    style={{
-                      background: 'rgba(132, 141, 232, 0.08)',
-                      border: '1px solid rgba(132, 141, 232, 0.2)',
-                      borderRadius: '6px',
-                    }}
-                  >
-                    <SolanaIcon size={20} />
-                    <span className="font-primary text-sm font-medium text-[#ebedff]">Solana</span>
+                  <div className='relative p-[6px] flex items-stretch' style={{ background: 'rgba(30,32,61,0.9)'}}>
+                    <div
+                      className="flex items-center gap-2 px-3 h-[32px]"
+                      style={{
+                        background: 'rgba(7, 8, 24, 0.8)',
+                        borderRadius: '5px',
+                      }}
+                    >
+                    <SolanaIcon size={24} />
+                    <span className="font-primary text-sm font-bold leading-[183%] tracking-[0.03em] text-[#ebedff]">Solana</span>
+                    </div>
+                    
+                    <PlusCorner className="top-[-5px] left-[-5px]" />
+                    <PlusCorner className='bottom-[-5px] left-[-5px]' />
+                    <PlusCorner className='top-[-5px] right-[-5px]' />
+
                   </div>
 
-                  {/* Balance label */}
-                  <span className="font-primary text-sm text-[rgba(235,237,255,0.5)]">Balance:</span>
+                  <div className='relative flex gap-2 items-stretch px-[6px] py-[6px] w-full' style={{ background: 'rgba(30, 32, 61, 0.9)'}}>
+                    {/* Balance label */}
+                    <div
+                      className="flex items-center gap-2 px-3 h-[32px]"
+                      style={{
+                        background: 'rgba(7, 8, 24, 0.8)',
+                        borderRadius: '5px',
+                      }}
+                    >
+                      <span className="font-primary text-[10px] tracking-[0.03em] leading-[220%] text-[#ebeafa]">Balance:</span>
+                    </div>
 
-                  {/* Balance value */}
-                  <div
-                    className="flex-1 text-right px-3 py-2"
-                    style={{
-                      background: 'rgba(132, 141, 232, 0.02)',
-                      border: '1px solid rgba(132, 141, 232, 0.1)',
-                      borderRadius: '6px',
-                    }}
-                  >
-                    <span className="font-primary text-sm font-medium text-[#ebedff]">XX.XX SOL</span>
+                    {/* Balance value */}
+                    <div
+                      className="flex-1 text-right flex items-center justify-end px-3 h-[32px]"
+                      style={{
+                        background: 'rgba(7,8,24, 0.8)',
+                        borderRadius: '5px',
+                      }}
+                    >
+                      <span className="font-primary text-sm font-medium text-[#ebedff]">XX.XX SOL</span>
+                    </div>
+
+                    <PlusCorner className="bottom-[-5px] right-[-5px]" />
+                    <PlusCorner className='bottom-[-5px] left-[-5px]' />
+                    <PlusCorner className='top-[-5px] right-[-5px]' />
+
                   </div>
-
-                  <PlusCorner className="bottom-[-5px] left-[-5px]" />
-                  <PlusCorner className="bottom-[-5px] right-[-5px]" />
                 </div>
 
                 {/* Withdraw Amount */}
-                <div className="relative mb-6">
+                <div
+                  className="relative px-3 pb-2 mb-[30px]"
+                  style={{
+                    borderTop: '1px solid rgba(235, 234, 250, 0.08)',
+                    borderBottom: '1px solid rgba(235, 234, 250, 0.08)',
+                    background: 'rgba(30, 32, 61, 0.9)',
+                  }}
+                >
                   <PlusCorner className="top-[-5px] left-[-5px]" />
                   <PlusCorner className="bottom-[-5px] right-[-5px]" />
 
-                  <label className="font-primary text-sm text-[rgba(235,237,255,0.7)] mb-2 block">
-                    Withdraw Amount
-                  </label>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <label className="font-primary text-[10px] text-[#ebeafa] block leading-[220%] tracking-[0.03em]">
+                      Withdraw Amount
+                    </label>
                     <div
-                      className="flex-1"
-                      style={{
-                        background: 'rgba(132, 141, 232, 0.02)',
-                        border: '1px solid rgba(132, 141, 232, 0.1)',
-                        borderRadius: '6px',
-                      }}
-                    >
-                      <input
-                        type="text"
-                        value={withdrawAmount}
-                        onChange={(e) => setWithdrawAmount(e.target.value)}
-                        placeholder="0.00"
-                        className="w-full bg-transparent px-3 py-2.5 font-primary text-sm text-[#ebedff] placeholder-[rgba(235,237,255,0.3)] outline-none"
-                      />
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={handleMaxClick}
-                        className="font-primary text-xs font-medium text-[#848DE8] hover:text-[#a5abf0] transition-colors"
+                        className="flex items-center w-full max-w-[190px] h-[22px]"
+                        style={{
+                          background: 'rgba(12, 12, 31, 0.8)',
+                          borderRadius: '5px',
+                        }}
                       >
-                        MAX
-                      </button>
-                      <div className="flex items-center gap-1.5">
-                        <SolanaIcon size={20} />
-                        <span className="font-primary text-sm font-medium text-[#ebedff]">SOL</span>
+                        <input
+                          type="text"
+                          value={withdrawAmount}
+                          onChange={(e) => setWithdrawAmount(e.target.value)}
+                          placeholder="0.00"
+                          className="w-full bg-transparent px-1 font-primary text-sm text-[#ebedff] placeholder-[rgba(235,237,255,0.3)] outline-none"
+                        />
+                    </div>
+                    </div>
+
+                    <div className=''>
+                      <span className='font-primary text-[8px] font-black leading-[275%] tracking-[0.04em] text-[#ebeafa]'>MAX</span>
+                      <div className='flex gap-1'>
+                        <SolanaIcon />
+                        <span className='font-primary font-medium text-[22px] leading-[100%] tracking-[0.01em] text-[#ebeafa]'>SOL</span>
                       </div>
                     </div>
+
                   </div>
                 </div>
 
                 {/* Destination Address */}
-                <div className="relative mb-8">
+                <div
+                  className="relative p-[5px] mb-[50px] flex items-center"
+                  style={{
+                    borderTop: '1px solid rgba(235, 234, 250, 0.08)',
+                    borderBottom: '1px solid rgba(235, 234, 250, 0.08)',
+                    background: 'rgba(30, 32, 61, 0.9)',
+                  }}
+                >
                   <PlusCorner className="top-[-5px] left-[-5px]" />
                   <PlusCorner className="bottom-[-5px] right-[-5px]" />
+                  <PlusCorner className="top-[-5px] right-[-5px]" />
+                  <PlusCorner className="bottom-[-5px] left-[-5px]" />
 
                   <div
+                    className="flex items-center w-full h-[22px]"
                     style={{
-                      background: 'rgba(132, 141, 232, 0.02)',
-                      border: '1px solid rgba(132, 141, 232, 0.1)',
-                      borderRadius: '6px',
+                      background: 'rgba(16, 16, 36, 0.9)',
+                      borderRadius: '5px',
                     }}
                   >
                     <input
@@ -382,33 +409,37 @@ function WithdrawModal({
                       value={destinationAddress}
                       onChange={(e) => setDestinationAddress(e.target.value)}
                       placeholder="Address: Address of destination wallet"
-                      className="w-full bg-transparent px-3 py-3 font-primary text-sm text-[#ebedff] placeholder-[rgba(235,237,255,0.4)] outline-none"
+                      className="w-full bg-transparent px-1 font-primary text-sm text-[#fff] placeholder-[rgba(235,237,255,0.3)] outline-none"
                     />
                   </div>
                 </div>
 
-                {/* Withdraw Button */}
-                <div className="relative flex justify-center">
-                  <PlusCorner className="top-[-5px] left-[-5px]" />
-                  <PlusCorner className="top-[-5px] right-[-5px]" />
-                  <PlusCorner className="bottom-[-5px] left-[-5px]" />
-                  <PlusCorner className="bottom-[-5px] right-[-5px]" />
-
-                  <button
-                    className="relative px-16 py-3 font-primary text-base font-medium text-[#ebedff] tracking-[0.02em] transition-all hover:brightness-110 active:scale-[0.98]"
+                  <div className='relative' style={{
+                    borderTop: '1px solid rgba(235, 234, 250, 0.08)',
+                    borderBottom: '1px solid rgba(235, 234, 250, 0.08)'
+                  }}>
+                    <PlusCorner className="top-[-5px] left-[-5px]" />
+                    <PlusCorner className="bottom-[-5px] right-[-5px]" />
+                    {/* Withdraw Button */}
+                    <div className="relative flex justify-center p-[5px] w-fit mx-auto"
                     style={{
-                      background: 'rgba(132, 141, 232, 0.08)',
-                      border: '1px solid rgba(132, 141, 232, 0.2)',
-                      borderRadius: '6px',
-                    }}
-                  >
-                    <Corner className="top-0 left-0" />
-                    <Corner className="top-0 right-0 rotate-90" />
-                    <Corner className="bottom-0 right-0 rotate-180" />
-                    <Corner className="bottom-0 left-0 -rotate-90" />
-                    Withdraw
-                  </button>
-                </div>
+                      background: 'rgba(30, 32, 61, 0.9)',
+                    }}>
+                      <PlusCorner className="top-[-5px] left-[-5px]" />
+                        <PlusCorner className="top-[-5px] right-[-5px]" />
+                        <PlusCorner className="bottom-[-5px] left-[-5px]" />
+                        <PlusCorner className="bottom-[-5px] right-[-5px]" />
+                      <button
+                        className="relative px-12 p-[5px] font-primary text-[18px] font-semibold text-[#ebeafa] tracking-[0.02em] leading-[122%] transition-all hover:brightness-110 active:scale-[0.98]"
+                        style={{
+                          background: '#111126',
+                          borderRadius: '5px',
+                        }}
+                      >
+                        Withdraw
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
