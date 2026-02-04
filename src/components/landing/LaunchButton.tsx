@@ -25,7 +25,7 @@ export default function LaunchButton() {
 
   const hasWallet = wallets.length > 0
 
-  // Автоматический редирект на dashboard при успешной авторизации
+
   useEffect(() => {
     if (authenticated && hasWallet) {
       navigate('/dashboard')
@@ -36,7 +36,7 @@ export default function LaunchButton() {
     if (authenticated && hasWallet) {
       navigate('/dashboard')
     } else {
-      // Показываем modal для выбора кошелька
+
       login()
     }
   }, [authenticated, hasWallet, login, navigate])

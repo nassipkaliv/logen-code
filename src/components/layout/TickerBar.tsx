@@ -32,11 +32,25 @@ export default function TickerBar() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const CACHE_KEY = 'crypto_ticker_cache';
+    const CACHE_DURATION = 24 * 60 * 60 * 1000;
+
     const fetchCryptoData = async () => {
       try {
+
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+          const { data, timestamp } = JSON.parse(cached);
+          if (Date.now() - timestamp < CACHE_DURATION) {
+            setCryptoData(data);
+            setLoading(false);
+            return;
+          }
+        }
+
         const ids = COINS.map(c => c.id).join(',');
         const response = await fetch(
-          `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`
+          `/api/coingecko/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`
         );
         
         if (!response.ok) {
@@ -57,31 +71,40 @@ export default function TickerBar() {
           };
         });
 
+
+        localStorage.setItem(CACHE_KEY, JSON.stringify({
+          data: formattedData,
+          timestamp: Date.now()
+        }));
+
         setCryptoData(formattedData);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching crypto data:', error);
-        // Fallback data
-        setCryptoData([
-          { symbol: 'SOL', change: '+2.31%', isPositive: true },
-          { symbol: 'BONK', change: '-4.88%', isPositive: false },
-          { symbol: 'POPCAT', change: '+1.25%', isPositive: true },
-        ]);
+
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+          const { data } = JSON.parse(cached);
+          setCryptoData(data);
+        } else {
+          setCryptoData([
+            { symbol: 'BTC', change: '+0.00%', isPositive: true },
+            { symbol: 'ETH', change: '+0.00%', isPositive: true },
+            { symbol: 'SOL', change: '+0.00%', isPositive: true },
+          ]);
+        }
         setLoading(false);
       }
     };
 
     fetchCryptoData();
-    // Refresh every 60 seconds
-    const interval = setInterval(fetchCryptoData, 60000);
-    return () => clearInterval(interval);
   }, []);
 
   if (loading || cryptoData.length === 0) {
     return null; // Don't show ticker while loading
   }
 
-  // Duplicate data for seamless loop
+
   const displayData = [...cryptoData, ...cryptoData, ...cryptoData];
 
   return (

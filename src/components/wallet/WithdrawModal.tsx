@@ -136,7 +136,7 @@ export function WithdrawModal({
                         borderRadius: '5px',
                       }}
                     >
-                      <span className="font-primary text-sm font-medium text-[#ebedff]">XX.XX SOL</span>
+                      <span className="font-primary text-sm font-medium text-[#ebedff]">0 SOL</span>
                     </div>
 
                     <PlusCorner className="bottom-[-5px] right-[-5px]" />

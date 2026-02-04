@@ -1,11 +1,93 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useWallets, useUser } from '@privy-io/react-auth'
 import { DashboardLayout } from '../components/dashboard'
 import { Corner, PlusCorner } from '../components/ui'
 import { InputField, ActionButton, BalanceField, UsageRow, WithdrawModal } from '../components/wallet'
 
+// Fetch SOL balance from Solana RPC
+async function fetchSolBalance(address: string): Promise<number | null> {
+  try {
+    const response = await fetch('https://api.mainnet-beta.solana.com', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'getBalance',
+        params: [address]
+      })
+    })
+    const data = await response.json()
+    if (data.result?.value) {
+      return data.result.value / 1e9
+    }
+    return null
+  } catch (error) {
+    console.error('Error fetching SOL balance:', error)
+    return null
+  }
+}
+
 export default function WalletPage() {
+  const { wallets } = useWallets()
+  const { user } = useUser()
   const [highlightPublicKey, setHighlightPublicKey] = useState(false)
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false)
+  const [solBalance, setSolBalance] = useState<number | null>(null)
+  const [loadingBalance, setLoadingBalance] = useState(false)
+
+
+  const solanaWallet = wallets.find(w => {
+    // @ts-ignore
+    return w.type === 'solana' || w.chainType === 'solana' || w.address?.startsWith('sol')
+  })
+  
+  // @ts-ignore - embeddedWallet may not be in types
+  const embeddedWallet = user?.embeddedWallet
+  
+
+  // @ts-ignore
+  const solanaLinkedAccount = user?.linkedAccounts?.find(acc => {
+    // @ts-ignore
+    return acc.type === 'wallet' && acc.chainType === 'solana'
+  })
+  
+  // @ts-ignore
+  const solanaLinkedAddress = solanaLinkedAccount?.address
+  
+
+  const walletAddress = 
+    solanaWallet?.address || 
+    (embeddedWallet?.address as string) || 
+    solanaLinkedAddress || 
+    wallets[0]?.address || 
+    ''
+  
+
+  useEffect(() => {
+    if (walletAddress && (walletAddress.startsWith('sol') || walletAddress.startsWith('7G'))) {
+      const fetchBalance = async () => {
+        setLoadingBalance(true)
+        const balance = await fetchSolBalance(walletAddress)
+        setSolBalance(balance)
+        setLoadingBalance(false)
+      }
+      fetchBalance()
+    }
+  }, [walletAddress])
+
+  const formattedPublicKey = walletAddress 
+    ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}` 
+    : 'No wallet connected'
+
+
+  const formatSolBalance = (balance: number | null) => {
+    if (balance === null) return '0'
+    const formatted = balance >= 1 
+      ? balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 })
+      : balance.toFixed(4)
+    return `${formatted} SOL`
+  }
 
   const handleDeposit = () => {
     setHighlightPublicKey(true)
@@ -14,6 +96,21 @@ export default function WalletPage() {
 
   const handleWithdraw = () => {
     setIsWithdrawModalOpen(true)
+  }
+
+
+  const isAuthenticated = user?.id !== undefined
+  
+  if (!isAuthenticated) {
+    return (
+      <DashboardLayout>
+        <div className="mx-4 sm:mx-6 md:mx-[40px] pt-6 sm:pt-8 md:pt-10 pb-0">
+          <div className="flex items-center justify-center py-20">
+            <span className="text-[#848de8]">Please connect your wallet</span>
+          </div>
+        </div>
+      </DashboardLayout>
+    )
   }
 
   return (
@@ -52,8 +149,8 @@ export default function WalletPage() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-[15px] mb-3 sm:mb-[15px]">
-                <InputField label="Public Key:" value="9AxKm7...Qp2L" icon="copy" highlight={highlightPublicKey} />
-                <InputField label="Private Key:" value="5KxP9...mN3v" hiddenValue="••••••••••••••" icon="eye" />
+                <InputField label="Public Key:" value={formattedPublicKey} icon="copy" highlight={highlightPublicKey} />
+                <InputField label="Private Key:" value={walletAddress ? '********' : 'No wallet'} hiddenValue="••••••••••••••" icon="eye" />
               </div>
 
               <div className="mb-4 sm:mb-5">
@@ -62,8 +159,11 @@ export default function WalletPage() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4 sm:mb-6">
-                <BalanceField label="Available Balance:" value="XX.XX" />
-                <BalanceField label="Locked in strategies:" value="XX.XX" />
+                <BalanceField 
+                  label="Available Balance:" 
+                  value={loadingBalance ? '0 SOL' : formatSolBalance(solBalance)} 
+                />
+                <BalanceField label="Locked in strategies:" value="0.00 SOL" />
               </div>
 
               <div className="flex gap-3">
@@ -102,8 +202,8 @@ export default function WalletPage() {
                   <Corner className="bottom-0 right-0 rotate-180" />
 
                   <div className="flex flex-col gap-3 sm:gap-[15px]">
-                    <UsageRow label="Funds in automation:" value="65%" />
-                    <UsageRow label="Free balance:" value="35%" />
+                    <UsageRow label="Funds in automation:" value="0%" />
+                    <UsageRow label="Free balance:" value="100%" />
                   </div>
                 </div>
               </div>

@@ -191,11 +191,24 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    const CACHE_KEY = 'crypto_dashboard_cache'
+    const CACHE_DURATION = 24 * 60 * 60 * 1000 // 24 hours
+
     const fetchCryptoData = async () => {
       try {
+        const cached = localStorage.getItem(CACHE_KEY)
+        if (cached) {
+          const { data, timestamp } = JSON.parse(cached)
+          if (Date.now() - timestamp < CACHE_DURATION) {
+            setCryptos(data)
+            setLoading(false)
+            return
+          }
+        }
+
         const ids = CRYPTO_COINS.map(c => c.id).join(',')
         const response = await fetch(
-          `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids}&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=24h`
+          `/api/coingecko/coins/markets?vs_currency=usd&ids=${ids}&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=24h`
         )
         
         if (!response.ok) {
@@ -203,18 +216,27 @@ export default function DashboardPage() {
         }
 
         const data = await response.json()
+        
+
+        localStorage.setItem(CACHE_KEY, JSON.stringify({
+          data,
+          timestamp: Date.now()
+        }))
+        
         setCryptos(data)
         setLoading(false)
       } catch (error) {
         console.error('Error fetching crypto data:', error)
+        const cached = localStorage.getItem(CACHE_KEY)
+        if (cached) {
+          const { data } = JSON.parse(cached)
+          setCryptos(data)
+        }
         setLoading(false)
       }
     }
 
     fetchCryptoData()
-    // Refresh every 60 seconds
-    const interval = setInterval(fetchCryptoData, 60000)
-    return () => clearInterval(interval)
   }, [])
 
   const handlePrev = () => {

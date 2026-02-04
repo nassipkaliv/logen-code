@@ -3,7 +3,7 @@ export function BalanceField({
   value,
 }: {
   label: string
-  value: string
+  value: string | number
 }) {
   return (
     <div className="flex-1 min-w-0">
@@ -18,8 +18,8 @@ export function BalanceField({
           background: 'rgba(132, 141, 232, 0.02)',
         }}
       >
-        <span>{value}</span>
-        <span className="font-primary leading-[158%] tracking-[0.02em] text-xs sm:text-[13px]" style={{ color: 'rgba(132, 141, 232, 0.87)' }}>SOL</span>
+        <span className="font-primary text-sm font-medium text-[#ebedff]">{value}</span>
+        <span className="font-primary leading-[158%] tracking-[0.02em] text-xs sm:text-[13px]"></span>
       </div>
     </div>
   )

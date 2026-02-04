@@ -68,13 +68,13 @@ export default function DashboardHeader() {
   const [showLogout, setShowLogout] = useState(false)
   const navigate = useNavigate()
 
-  // Определяем тип кошелька и получаем адрес
+
   const walletInfo = useMemo(() => {
     if (wallets.length === 0) {
       return { type: null, address: null, displayAddress: 'Not connected' }
     }
 
-    // Проверяем на Solana кошелек
+
     const solanaWallet = wallets.find((wallet) => {
       const chainId = wallet.chainId?.toLowerCase() || ''
       const type = wallet.type?.toLowerCase() || ''
@@ -126,7 +126,7 @@ export default function DashboardHeader() {
       console.log('Logout error (ignoring):', error)
     }
     setShowLogout(false)
-    // Перенаправляем на главную страницу
+
     navigate('/')
   }
 

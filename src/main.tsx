@@ -8,7 +8,7 @@ import './styles/index.css'
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <PrivyProvider
-      appId="cml7mb13u001dlb0cfum474rj"
+      appId="cml7swmq300exl80cp3kuzdhp"
       config={{
         appearance: {
           accentColor: '#5d69d7',
