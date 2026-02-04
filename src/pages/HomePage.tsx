@@ -6,8 +6,8 @@ import { HeroSection, SpeedGapSection, FeaturesSection, HowItWorksSection, Visua
 export default function HomePage() {
   return (
     <div className="min-h-screen overflow-x-hidden">
-      <TickerBar />
       <Header />
+      <TickerBar />
       <main>
         <HeroSection />
         <SpeedGapSection />

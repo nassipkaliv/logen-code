@@ -1,10 +1,36 @@
-import { useRef } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import type { Swiper as SwiperType } from 'swiper'
 import { DashboardLayout } from '../components/dashboard'
-
 import 'swiper/css'
 import '../styles/swiper-custom.css'
+
+interface CryptoData {
+  id: string;
+  symbol: string;
+  name: string;
+  image: string;
+  current_price: number;
+  price_change_percentage_24h: number;
+  total_volume: number;
+  market_cap: number;
+}
+
+const CRYPTO_COINS = [
+  { id: 'bitcoin', symbol: 'BTC', name: 'Bitcoin' },
+  { id: 'ethereum', symbol: 'ETH', name: 'Ethereum' },
+  { id: 'binancecoin', symbol: 'BNB', name: 'BNB' },
+  { id: 'solana', symbol: 'SOL', name: 'Solana' },
+  { id: 'tron', symbol: 'TRX', name: 'TRON' },
+  { id: 'dogecoin', symbol: 'DOGE', name: 'Dogecoin' },
+  { id: 'cardano', symbol: 'ADA', name: 'Cardano' },
+  { id: 'chainlink', symbol: 'LINK', name: 'Chainlink' },
+  { id: 'stellar', symbol: 'XLM', name: 'Stellar' },
+  { id: 'litecoin', symbol: 'LTC', name: 'Litecoin' },
+  { id: 'avalanche-2', symbol: 'AVAX', name: 'Avalanche' },
+  { id: 'shiba-inu', symbol: 'SHIB', name: 'Shiba Inu' },
+  { id: 'polkadot', symbol: 'DOT', name: 'Polkadot' },
+];
 
 function Corner({ className }: { className?: string }) {
   return (
@@ -30,43 +56,33 @@ function PlusCorner({ className }: { className?: string }) {
   )
 }
 
-function SolanaIcon() {
-  return (
-    <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <g filter="url(#filter0_i_2_11780)">
-      <rect width="80" height="80" fill="white" fill-opacity="0.04"/>
-      <rect x="0.740741" y="0.740741" width="78.5185" height="78.5185" stroke="white" stroke-opacity="0.12" stroke-width="1.48148"/>
-      <path d="M22.2222 0H57.7777V2.96296H22.2222V0Z" fill="#D9D9D9"/>
-      <path d="M80 10.3704L80 68.1481L78.5185 68.1481L78.5185 10.3704L80 10.3704Z" fill="#D9D9D9"/>
-      <path d="M1.48145 10.3704L1.48144 68.1481L-3.61426e-05 68.1481L-3.3617e-05 10.3704L1.48145 10.3704Z" fill="#D9D9D9"/>
-      <path d="M22.2222 77.037H57.7777V80H22.2222V77.037Z" fill="#D9D9D9"/>
-      <g clip-path="url(#clip0_2_11780)">
-      <path d="M26.7578 47.8006C26.9844 47.5695 27.2915 47.4397 27.6118 47.4397H57.1605C57.6988 47.4397 57.9683 48.1042 57.5875 48.4927L51.7487 54.4495C51.5222 54.6806 51.215 54.8105 50.8948 54.8105H21.346C20.8077 54.8105 20.5383 54.1459 20.919 53.7574L26.7578 47.8006Z" fill="#EBEDFF"/>
-      <path d="M26.7578 25.5461C26.9844 25.315 27.2915 25.1852 27.6118 25.1852H57.1605C57.6988 25.1852 57.9683 25.8498 57.5875 26.2382L51.7487 32.1951C51.5222 32.4262 51.215 32.556 50.8948 32.556H21.346C20.8077 32.556 20.5383 31.8914 20.919 31.5029L26.7578 25.5461Z" fill="#EBEDFF"/>
-      <path d="M51.7487 36.6027C51.5222 36.3716 51.215 36.2417 50.8948 36.2417H21.346C20.8077 36.2417 20.5383 36.9063 20.919 37.2948L26.7578 43.2516C26.9844 43.4827 27.2915 43.6125 27.6118 43.6125H57.1605C57.6988 43.6125 57.9683 42.9479 57.5875 42.5594L51.7487 36.6027Z" fill="#EBEDFF"/>
-      </g>
-      </g>
-      <defs>
-      <filter id="filter0_i_2_11780" x="0" y="0" width="80" height="82.963" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
-      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
-      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-      <feOffset dy="2.96296"/>
-      <feGaussianBlur stdDeviation="11.1111"/>
-      <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
-      <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.15 0"/>
-      <feBlend mode="normal" in2="shape" result="effect1_innerShadow_2_11780"/>
-      </filter>
-      <clipPath id="clip0_2_11780">
-      <rect width="37.037" height="29.6296" fill="white" transform="translate(20.7407 25.1852)"/>
-      </clipPath>
-      </defs>
-    </svg>
+function CryptoCard({ crypto }: { crypto: CryptoData }) {
+  const changeColor = crypto.price_change_percentage_24h >= 0 ? '#5fffd7' : '#ff587a';
+  const changeBg = crypto.price_change_percentage_24h >= 0 
+    ? 'rgba(95, 255, 215, 0.1)' 
+    : 'rgba(255, 69, 120, 0.1)';
+  
+  const formatPrice = (price: number) => {
+    if (price >= 1000) {
+      return `$${price.toLocaleString('en-US', { maximumFractionDigits: 2 })}`;
+    } else if (price >= 1) {
+      return `$${price.toFixed(2)}`;
+    } else {
+      return `$${price.toFixed(4)}`;
+    }
+  };
 
-  )
-}
+  const formatVolume = (volume: number) => {
+    if (volume >= 1e9) {
+      return `$${(volume / 1e9).toFixed(1)}B`;
+    } else if (volume >= 1e6) {
+      return `$${(volume / 1e6).toFixed(1)}M`;
+    } else if (volume >= 1e3) {
+      return `$${(volume / 1e3).toFixed(1)}K`;
+    }
+    return `$${volume.toFixed(0)}`;
+  };
 
-function TokenCard() {
   return (
     <div
       className="relative p-3 sm:p-4 md:p-5 w-full pt-6 sm:pt-8 md:pt-10"
@@ -77,33 +93,42 @@ function TokenCard() {
       }}
     >
       <div className="flex justify-center mb-6 sm:mb-8 md:mb-10">
-        <SolanaIcon />
+        <img 
+          src={crypto.image} 
+          alt={crypto.name}
+          className="w-16 h-16 sm:w-20 sm:h-20"
+        />
       </div>
 
-      <h3 className="font-primary text-sm sm:text-base font-medium leading-[138%] tracking-[0.01em] text-[#ededf8] mb-2 sm:mb-[15px]">
-        SOLANA (SOL)
+      <h3 className="font-primary text-sm sm:text-base font-medium leading-[138%] tracking-[0.01em] text-[#ededf8] mb-2 sm:mb-[15px] text-center">
+        {crypto.name.toUpperCase()} ({crypto.symbol.toUpperCase()})
       </h3>
 
       <div className="space-y-2 sm:space-y-[10px]">
         <div className="flex justify-between items-center">
-          <span className="font-primary text-xs sm:text-sm text-[rgba(235,234,250,0.5)] tracking-[0.02em] leading-[156%]">UPTIME:</span>
-          <span className="font-primary text-xs sm:text-sm text-[#ededf8] tracking-[0.02em] leading-[153%]">24:17:42</span>
+          <span className="font-primary text-xs sm:text-sm text-[rgba(235,234,250,0.5)] tracking-[0.02em] leading-[156%]">Price:</span>
+          <span className="font-primary text-xs sm:text-sm text-[#ededf8] tracking-[0.02em] leading-[153%]">
+            {formatPrice(crypto.current_price)}
+          </span>
         </div>
         <div className="flex justify-between items-center">
           <span className="font-primary text-xs sm:text-sm text-[rgba(235,234,250,0.5)] tracking-[0.02em] leading-[156%]">24h Change:</span>
           <span
-            className="font-mono text-[10px] sm:text-xs px-1 sm:px-1.5 py-0.5 text-[#ff587a]"
+            className="font-mono text-[10px] sm:text-xs px-1 sm:px-1.5 py-0.5"
             style={{
-              background: 'rgba(255, 69, 120, 0.1), linear-gradient(270deg, rgba(29, 9, 25, 0.12) 35%, rgba(255, 69, 120, 0.12) 100%)',
-              borderLeft: '1px solid #ff587a',
+              background: changeBg,
+              color: changeColor,
+              borderLeft: `1px solid ${changeColor}`,
             }}
           >
-            -X.XXX%
+            {crypto.price_change_percentage_24h >= 0 ? '+' : ''}{crypto.price_change_percentage_24h.toFixed(2)}%
           </span>
         </div>
         <div className="flex justify-between items-center">
           <span className="font-primary text-xs sm:text-sm text-[rgba(235,234,250,0.5)] tracking-[0.02em] leading-[156%]">Volume:</span>
-          <span className="font-primary text-xs sm:text-sm text-[#ededf8] tracking-[0.02em] leading-[153%]">XXXXX</span>
+          <span className="font-primary text-xs sm:text-sm text-[#ededf8] tracking-[0.02em] leading-[153%]">
+            {formatVolume(crypto.total_volume)}
+          </span>
         </div>
       </div>
     </div>
@@ -160,16 +185,37 @@ function NavigationArrows({
   )
 }
 
-const tokens = [
-  { id: 1, name: 'SOLANA (SOL)' },
-  { id: 2, name: 'SOLANA (SOL)' },
-  { id: 3, name: 'SOLANA (SOL)' },
-  { id: 4, name: 'SOLANA (SOL)' },
-  { id: 5, name: 'SOLANA (SOL)' },
-]
-
 export default function DashboardPage() {
   const swiperRef = useRef<SwiperType | null>(null)
+  const [cryptos, setCryptos] = useState<CryptoData[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchCryptoData = async () => {
+      try {
+        const ids = CRYPTO_COINS.map(c => c.id).join(',')
+        const response = await fetch(
+          `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids}&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=24h`
+        )
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch')
+        }
+
+        const data = await response.json()
+        setCryptos(data)
+        setLoading(false)
+      } catch (error) {
+        console.error('Error fetching crypto data:', error)
+        setLoading(false)
+      }
+    }
+
+    fetchCryptoData()
+    // Refresh every 60 seconds
+    const interval = setInterval(fetchCryptoData, 60000)
+    return () => clearInterval(interval)
+  }, [])
 
   const handlePrev = () => {
     swiperRef.current?.slidePrev()
@@ -177,6 +223,16 @@ export default function DashboardPage() {
 
   const handleNext = () => {
     swiperRef.current?.slideNext()
+  }
+
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center py-20">
+          <span className="text-[#848de8]">Loading crypto data...</span>
+        </div>
+      </DashboardLayout>
+    )
   }
 
   return (
@@ -195,9 +251,11 @@ export default function DashboardPage() {
             slidesPerView={3}
             centeredSlides={true}
             spaceBetween={15}
-            initialSlide={2}
+            initialSlide={6}
             speed={400}
             grabCursor={true}
+            loop={true}
+            loopAdditionalSlides={5}
             breakpoints={{
               320: {
                 slidesPerView: 1.5,
@@ -213,9 +271,9 @@ export default function DashboardPage() {
               },
             }}
           >
-            {tokens.map((token) => (
-              <SwiperSlide key={token.id}>
-                <TokenCard />
+            {cryptos.map((crypto) => (
+              <SwiperSlide key={crypto.id}>
+                <CryptoCard crypto={crypto} />
               </SwiperSlide>
             ))}
           </Swiper>

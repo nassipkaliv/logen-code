@@ -1,7 +1,6 @@
 import { ReactNode } from 'react'
 import DashboardHeader from './DashboardHeader'
-import CurrencyTicker from './CurrencyTicker'
-import { TickerBar } from '../layout'
+import TickerBar from '../layout/TickerBar'
 
 // L-shaped corner for grid intersections
 function GridCorner({ className }: { className?: string }) {
@@ -32,9 +31,8 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <div className="min-h-screen bg-[#02030e] overflow-x-hidden">
-      <TickerBar />
       <DashboardHeader />
-      <CurrencyTicker />
+      <TickerBar />
 
       {/* Main content area with continuous vertical lines */}
       <div className="relative">
