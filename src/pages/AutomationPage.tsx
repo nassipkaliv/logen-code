@@ -23,6 +23,7 @@ export default function AutomationPage() {
   const [source, setSource] = useState('Exchange')
   const [asset, setAsset] = useState('Token')
   const [selectedStrategies, setSelectedStrategies] = useState<string[]>([])
+  const [pausedStrategies, setPausedStrategies] = useState<Set<string>>(new Set())
   const [isStrategyOpen, setIsStrategyOpen] = useState(false)
   const strategyRef = useRef<HTMLDivElement>(null)
 
@@ -38,7 +39,21 @@ export default function AutomationPage() {
     })
   }
 
-  const isLimitReached = selectedStrategies.length >= MAX_STRATEGIES
+  const togglePauseStrategy = (strategy: string) => {
+    setPausedStrategies((prev) => {
+      const newSet = new Set(prev)
+      if (newSet.has(strategy)) {
+        newSet.delete(strategy)
+      } else {
+        newSet.add(strategy)
+      }
+      return newSet
+    })
+  }
+
+  const activeAutomationsCount = selectedStrategies.length - pausedStrategies.size
+
+  const isLimitReached = activeAutomationsCount >= MAX_STRATEGIES
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -53,7 +68,7 @@ export default function AutomationPage() {
 
   const automations = selectedStrategies.map((name) => ({
     name,
-    status: 'Active' as const,
+    status: pausedStrategies.has(name) ? ('Paused' as const) : ('Active' as const),
   }))
 
   return (
@@ -320,6 +335,7 @@ export default function AutomationPage() {
                         key={automation.name}
                         name={automation.name}
                         status={automation.status}
+                        onToggle={() => togglePauseStrategy(automation.name)}
                       />
                     ))
                   )}
@@ -379,7 +395,7 @@ export default function AutomationPage() {
                   <div className="hidden sm:block absolute w-[1px] h-[50px] bg-[rgba(132,141,232,0.12)]" style={{ right: '80px', top: '100%' }} />
 
 
-                  <CapacityBox value={String(selectedStrategies.length)} />
+                  <CapacityBox value={String(activeAutomationsCount)} />
                   <span className="font-primary font-medium text-[24px] sm:text-[31px] leading-[143%] tracking-[0.01em] text-[#848de8]">/</span>
                   <CapacityBox value={String(MAX_STRATEGIES)} />
                 </div>
@@ -387,10 +403,10 @@ export default function AutomationPage() {
 
               <div className="text-center">
                 <p className="font-primary font-medium text-[18px] sm:text-[22px] leading-[136%] tracking-[0.01em] text-white">
-                  Active automations:
+                  Active automations: {activeAutomationsCount}
                 </p>
                 <p className="font-primary font-normal text-[12px] sm:text-[13px] leading-[158%] tracking-[0.02em] text-[rgba(235,234,250,0.5)]">
-                  {isLimitReached ? 'Automation limit reached.' : `${MAX_STRATEGIES - selectedStrategies.length} slots available.`}
+                  {activeAutomationsCount >= MAX_STRATEGIES ? 'Automation limit reached.' : `${MAX_STRATEGIES - activeAutomationsCount} slots available.`}
                 </p>
               </div>
             </div>

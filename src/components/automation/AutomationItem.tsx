@@ -1,9 +1,11 @@
 export function AutomationItem({
   name,
   status,
+  onToggle,
 }: {
   name: string
   status: 'Active' | 'Paused'
+  onToggle?: () => void
 }) {
   const isActive = status === 'Active'
 
@@ -12,8 +14,9 @@ export function AutomationItem({
       <span className="font-primary text-[13px] text-[rgba(235,234,250,0.5)] tracking-[0.02em] leading-[158%]">
         {name}
       </span>
-      <span
-        className="px-2 py-0.5 font-primary text-[15px] font-medium tracking-[0.02em] leading-[147%]"
+      <button
+        className="px-2 py-0.5 font-primary text-[15px] font-medium tracking-[0.02em] leading-[147%] cursor-pointer hover:opacity-80 transition-opacity"
+        onClick={onToggle}
         style={{
           color: isActive ? '#5fffd7' : '#ff587a',
           background: isActive
@@ -23,7 +26,7 @@ export function AutomationItem({
         }}
       >
         {status}
-      </span>
+      </button>
     </div>
   )
 }
