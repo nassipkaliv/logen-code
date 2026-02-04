@@ -20,7 +20,7 @@ const steps = [
   {
     number: 1,
     image: '/assets/img/workscard1.png',
-    title: 'Connect wallet',
+    title: 'Launch app',
   },
   {
     number: 2,

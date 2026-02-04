@@ -1,5 +1,6 @@
-import { useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { useWallets, usePrivy } from '@privy-io/react-auth'
+import { useMemo, useState } from 'react'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 
 // Corner decoration component for buttons
 function Corner({ className }: { className?: string }) {
@@ -62,7 +63,72 @@ const navItems = [
 ]
 
 export default function DashboardHeader() {
-  const [walletAddress] = useState('7qRZ...c7Zr8V')
+  const { wallets } = useWallets()
+  const { logout } = usePrivy()
+  const [showLogout, setShowLogout] = useState(false)
+  const navigate = useNavigate()
+
+  // Определяем тип кошелька и получаем адрес
+  const walletInfo = useMemo(() => {
+    if (wallets.length === 0) {
+      return { type: null, address: null, displayAddress: 'Not connected' }
+    }
+
+    // Проверяем на Solana кошелек
+    const solanaWallet = wallets.find((wallet) => {
+      const chainId = wallet.chainId?.toLowerCase() || ''
+      const type = wallet.type?.toLowerCase() || ''
+      const meta = wallet.meta?.name?.toLowerCase() || ''
+      
+      return (
+        type === 'solana' ||
+        chainId === 'solana' ||
+        chainId.includes('solana') ||
+        chainId === '101' ||
+        chainId === '0x65' ||
+        meta.includes('phantom') ||
+        meta.includes('solflare') ||
+        meta.includes('backpack')
+      )
+    })
+
+    if (solanaWallet?.address) {
+      return {
+        type: 'solana',
+        address: solanaWallet.address,
+        displayAddress: `${solanaWallet.address.slice(0, 4)}...${solanaWallet.address.slice(-4)}`
+      }
+    }
+
+
+    const firstWallet = wallets[0]
+    if (firstWallet?.address) {
+      return {
+        type: 'ethereum',
+        address: firstWallet.address,
+        displayAddress: `${firstWallet.address.slice(0, 4)}...${firstWallet.address.slice(-4)}`
+      }
+    }
+
+    return { type: null, address: null, displayAddress: 'Not connected' }
+  }, [wallets])
+
+  const handleWalletClick = () => {
+    if (walletInfo.address) {
+      setShowLogout(!showLogout)
+    }
+  }
+
+  const handleLogout = async () => {
+    try {
+      await logout()
+    } catch (error) {
+      console.log('Logout error (ignoring):', error)
+    }
+    setShowLogout(false)
+    // Перенаправляем на главную страницу
+    navigate('/')
+  }
 
   return (
     <div className="w-full relative z-50 mt-2 sm:mt-3 md:mt-[15px] px-2 sm:px-4 md:px-0">
@@ -107,11 +173,12 @@ export default function DashboardHeader() {
           </nav>
 
           {/* Wallet section */}
-          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 relative">
             <span className="hidden lg:block text-[#b2b2b4] text-sm font-primary tracking-[0.01em]">
               Wallet connected:
             </span>
             <HeaderButton
+              onClick={handleWalletClick}
               className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 font-primary text-[10px] sm:text-xs md:text-sm font-medium text-[#ebedff] leading-[143%] tracking-[0.01em]"
             >
               <svg className="w-3 h-2.5 sm:w-[15px] sm:h-3" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -126,9 +193,21 @@ export default function DashboardHeader() {
                   </clipPath>
                 </defs>
               </svg>
-              <span className="hidden xs:inline sm:inline">{walletAddress}</span>
+              <span className="hidden xs:inline sm:inline">{walletInfo.displayAddress}</span>
               <span className="inline xs:hidden sm:hidden">Wallet</span>
             </HeaderButton>
+            
+            {/* Logout button */}
+            {showLogout && (
+              <div className="absolute top-full right-0 mt-2 bg-[#1a1a2e] border border-[rgba(132,141,232,0.3)] rounded-lg p-2 shadow-lg z-50">
+                <button
+                  onClick={handleLogout}
+                  className="px-3 py-1.5 text-xs font-primary text-red-400 hover:text-red-300 hover:bg-[rgba(255,100,100,0.1)] rounded transition-colors"
+                >
+                  Disconnect Wallet
+                </button>
+              </div>
+            )}
           </div>
         </div>
 

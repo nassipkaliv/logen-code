@@ -181,7 +181,13 @@ export function WithdrawModal({
                     </div>
 
                     <div className=''>
-                      <span className='font-primary text-[8px] font-black leading-[275%] tracking-[0.04em] text-[#ebeafa]'>MAX</span>
+                      <button
+                        type="button"
+                        onClick={handleMaxClick}
+                        className='font-primary text-[8px] font-black leading-[275%] tracking-[0.04em] text-[#ebeafa] cursor-pointer hover:text-[#848de8] transition-colors'
+                      >
+                        MAX
+                      </button>
                       <div className='flex gap-1'>
                         <SolanaIcon />
                         <span className='font-primary font-medium text-[22px] leading-[100%] tracking-[0.01em] text-[#ebeafa]'>SOL</span>

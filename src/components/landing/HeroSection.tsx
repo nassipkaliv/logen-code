@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import LaunchButton from './LaunchButton'
 
 // Decorative dot pattern for borders
 function BorderDots({ position }: { position: 'left' | 'right' }) {
@@ -193,45 +193,8 @@ export default function HeroSection() {
             </p>
           </motion.div>
 
-          {/* CTA Button container with corners */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="relative py-4 md:py-6 px-8 md:px-12"
-          >
-            <BlockCorner className="top-0 left-0" />
-            <BlockCorner className="top-0 right-0 rotate-90" />
-            <BlockCorner className="bottom-0 right-0 rotate-180" />
-            <BlockCorner className="bottom-0 left-0 -rotate-90" />
-            <Link
-              to="/dashboard"
-              className="relative px-6 py-3 font-primary text-sm font-medium text-[#ebedff] border border-[rgba(215,218,255,0.12)] rounded-sm hover:bg-[rgba(132,141,232,0.08)] transition-all"
-            style={{
-              boxShadow: 'inset 0 1px 1px 0 rgba(132, 141, 232, 0.2), inset 0 0 12px 0 rgba(132, 141, 232, 0.08), inset 0 0 8px 0 rgba(132, 141, 232, 0.06)',
-              background: 'rgba(132, 141, 232, 0.04)',
-            }}
-          >
-            {/* Corner decorations */}
-            <svg className="absolute top-0 left-0" width="6" height="6" viewBox="0 0 6 6" fill="none">
-              <rect width="1" height="6" fill="white" />
-              <rect width="6" height="1" fill="white" />
-            </svg>
-            <svg className="absolute top-0 right-0 rotate-90" width="6" height="6" viewBox="0 0 6 6" fill="none">
-              <rect width="1" height="6" fill="white" />
-              <rect width="6" height="1" fill="white" />
-            </svg>
-            <svg className="absolute bottom-0 right-0 rotate-180" width="6" height="6" viewBox="0 0 6 6" fill="none">
-              <rect width="1" height="6" fill="white" />
-              <rect width="6" height="1" fill="white" />
-            </svg>
-            <svg className="absolute bottom-0 left-0 -rotate-90" width="6" height="6" viewBox="0 0 6 6" fill="none">
-              <rect width="1" height="6" fill="white" />
-              <rect width="6" height="1" fill="white" />
-            </svg>
-            Launch App
-          </Link>
-          </motion.div>
+          {/* CTA Button with Privy wallet connection */}
+          <LaunchButton />
         </div>
       </div>
     </section>

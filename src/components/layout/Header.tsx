@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import HeaderLaunchButton from './HeaderLaunchButton'
 
 // Corner decoration component
 function Corner({ className }: { className?: string }) {
@@ -141,12 +142,7 @@ export default function Header() {
               </svg>
             </HeaderButton>
 
-            <HeaderButtonLink
-              to="/"
-              className="px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 font-primary text-[9px] sm:text-[10px] md:text-sm font-medium leading-[143%] tracking-[0.01em] text-center text-[#ebedff]"
-            >
-              Launch App
-            </HeaderButtonLink>
+            <HeaderLaunchButton />
           </div>
         </div>
       </header>
