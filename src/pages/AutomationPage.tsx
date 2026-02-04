@@ -103,8 +103,6 @@ export default function AutomationPage() {
 
   const activeAutomationsCount = selectedStrategies.length - pausedStrategies.size
 
-  const isLimitReached = activeAutomationsCount >= MAX_STRATEGIES
-
   // Save to localStorage when state changes
   useEffect(() => {
     localStorage.setItem('logen_source', source)

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import HeaderLaunchButton from './HeaderLaunchButton'
+import { useSiteSettings } from '../../hooks/useSiteSettings'
 
 // Corner decoration component
 function Corner({ className }: { className?: string }) {
@@ -38,26 +39,6 @@ function HeaderButton({
   )
 }
 
-function HeaderButtonLink({
-  children,
-  to,
-  className,
-}: {
-  children: React.ReactNode
-  to: string
-  className?: string
-}) {
-  return (
-    <Link to={to} className={`relative header-btn ${className}`}>
-      <Corner className="top-0 left-0" />
-      <Corner className="top-0 right-0 rotate-90" />
-      <Corner className="bottom-0 right-0 rotate-180" />
-      <Corner className="bottom-0 left-0 -rotate-90" />
-      {children}
-    </Link>
-  )
-}
-
 const navItems = [
   { label: 'Hero', href: '#hero' },
   { label: 'Features', href: '#features' },
@@ -70,6 +51,7 @@ const navItems = [
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
+  const { settings } = useSiteSettings()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -132,7 +114,7 @@ export default function Header() {
           {/* Right side */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <HeaderButton
-              href="https://x.com"
+              href={settings.xUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10"

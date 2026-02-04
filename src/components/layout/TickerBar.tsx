@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSiteSettings } from '../../hooks/useSiteSettings';
 
 interface CryptoData {
   symbol: string;
@@ -30,6 +31,7 @@ const COINS = [
 export default function TickerBar() {
   const [cryptoData, setCryptoData] = useState<CryptoData[]>([]);
   const [loading, setLoading] = useState(true);
+  const { settings } = useSiteSettings();
 
   useEffect(() => {
     const CACHE_KEY = 'crypto_ticker_cache';
@@ -101,38 +103,50 @@ export default function TickerBar() {
   }, []);
 
   if (loading || cryptoData.length === 0) {
-    return null; // Don't show ticker while loading
+    return null;
   }
 
 
   const displayData = [...cryptoData, ...cryptoData, ...cryptoData];
+  const showCustomText = settings.tickerText && settings.tickerText.trim() !== '';
 
   return (
-    <div className="relative w-full overflow-hidden py-[15px] border-y border-[rgba(235,234,250,0.08)] bg-[rgba(1,1,14,0.5)] mt-[10px]">
-      <div className="flex animate-ticker">
-        {displayData.map((item, index) => (
-          <div
-            key={index}
-            className="flex items-center gap-[6px] px-[15px] shrink-0"
-          >
-            <span className="font-primary text-[15px] leading-[147%] tracking-[0.02em] text-white">
-              {item.symbol}
+    <React.Fragment>
+      {showCustomText && (
+        <div className="relative w-full py-3 border-y border-[rgba(235,234,250,0.08)] bg-[rgba(132,141,232,0.05)]">
+          <div className="flex items-center justify-center">
+            <span className="font-primary text-xs sm:text-sm text-[#848DE8] tracking-[0.02em]">
+              {settings.tickerText}
             </span>
-            <div
-              className={`font-mono text-[10px] px-1.5 py-0.5 ${
-                item.isPositive ? 'text-[#5fffd7]' : 'text-[#ff587a]'
-              }`}
-              style={{
-                borderLeft: `1px solid ${
-                  item.isPositive ? 'rgb(95, 255, 215)' : 'rgb(255, 88, 122)'
-                }`,
-              }}
-            >
-              {item.change}
-            </div>
           </div>
-        ))}
+        </div>
+      )}
+      <div className="relative w-full overflow-hidden py-[15px] border-y border-[rgba(235,234,250,0.08)] bg-[rgba(1,1,14,0.5)]">
+        <div className="flex animate-ticker">
+          {displayData.map((item, index) => (
+            <div
+              key={index}
+              className="flex items-center gap-[6px] px-[15px] shrink-0"
+            >
+              <span className="font-primary text-[15px] leading-[147%] tracking-[0.02em] text-white">
+                {item.symbol}
+              </span>
+              <div
+                className={`font-mono text-[10px] px-1.5 py-0.5 ${
+                  item.isPositive ? 'text-[#5fffd7]' : 'text-[#ff587a]'
+                }`}
+                style={{
+                  borderLeft: `1px solid ${
+                    item.isPositive ? 'rgb(95, 255, 215)' : 'rgb(255, 88, 122)'
+                  }`,
+                }}
+              >
+                {item.change}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </React.Fragment>
   );
 }

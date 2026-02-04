@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useSiteSettings } from '../../hooks/useSiteSettings'
 
 // Corner decoration component
 function Corner({ className }: { className?: string }) {
@@ -83,6 +84,7 @@ const navItems = [
 ]
 
 export default function Footer() {
+  const { settings } = useSiteSettings()
   return (
     <footer className="relative pt-[40px] sm:pt-[60px] md:pt-[95px] overflow-hidden">
       {/* Top horizontal line - full width */}
@@ -134,7 +136,7 @@ export default function Footer() {
               {/* Right side */}
               <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                 <FooterButton
-                  href="https://x.com"
+                  href={settings.xUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10"

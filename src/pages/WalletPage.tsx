@@ -59,12 +59,6 @@ export default function WalletPage() {
     return w.type === 'solana' || w.chainType === 'solana' || w.address?.startsWith('sol')
   })
   
-  // Debug: show all available wallet data
-  console.log('=== WALLET DATA ===')
-  console.log('Wallets:', wallets)
-  console.log('Embedded Wallet:', user?.embeddedWallet)
-  console.log('Linked Accounts:', user?.linkedAccounts)
-  
   // @ts-ignore - embeddedWallet may not be in types
   const embeddedWallet = user?.embeddedWallet
   
