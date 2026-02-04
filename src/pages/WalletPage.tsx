@@ -7,20 +7,37 @@ import { InputField, ActionButton, BalanceField, UsageRow, WithdrawModal } from 
 // Fetch SOL balance from Solana RPC
 async function fetchSolBalance(address: string): Promise<number | null> {
   try {
-    const response = await fetch('https://api.mainnet-beta.solana.com', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: 1,
-        method: 'getBalance',
-        params: [address]
-      })
-    })
-    const data = await response.json()
-    if (data.result?.value) {
-      return data.result.value / 1e9
+    // Use public Solana RPC endpoints
+    const rpcUrls = [
+      'https://rpc.ankr.com/solana',
+      'https://solana-mainnet.g.alchemy.com/v2/demo',
+      'https://api.mainnet-beta.solana.com'
+    ]
+    
+    for (const rpcUrl of rpcUrls) {
+      try {
+        const response = await fetch(rpcUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            id: 1,
+            method: 'getBalance',
+            params: [address]
+          })
+        })
+        
+        if (response.ok) {
+          const data = await response.json()
+          if (data.result?.value) {
+            return data.result.value / 1e9
+          }
+        }
+      } catch {
+        continue
+      }
     }
+    
     return null
   } catch (error) {
     console.error('Error fetching SOL balance:', error)
@@ -41,6 +58,12 @@ export default function WalletPage() {
     // @ts-ignore
     return w.type === 'solana' || w.chainType === 'solana' || w.address?.startsWith('sol')
   })
+  
+  // Debug: show all available wallet data
+  console.log('=== WALLET DATA ===')
+  console.log('Wallets:', wallets)
+  console.log('Embedded Wallet:', user?.embeddedWallet)
+  console.log('Linked Accounts:', user?.linkedAccounts)
   
   // @ts-ignore - embeddedWallet may not be in types
   const embeddedWallet = user?.embeddedWallet
@@ -161,7 +184,7 @@ export default function WalletPage() {
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4 sm:mb-6">
                 <BalanceField 
                   label="Available Balance:" 
-                  value={loadingBalance ? '0 SOL' : formatSolBalance(solBalance)} 
+                  value={loadingBalance ? '0' : formatSolBalance(solBalance)} 
                 />
                 <BalanceField label="Locked in strategies:" value="0.00 SOL" />
               </div>

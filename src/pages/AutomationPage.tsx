@@ -3,29 +3,79 @@ import { DashboardLayout } from '../components/dashboard'
 import { Corner, PlusCorner } from '../components/ui'
 import { SelectField, ConditionInput, AutomationItem, CapacityBox } from '../components/automation'
 
+const exchanges = {
+  Raydium: ['BONK', 'WIF', 'POPCAT', 'BOME', 'SLERF', 'MYRO', 'SAMO', 'PENG', 'GUAC', 'TREMP'],
+  Orca: ['BONK', 'WIF', 'MYRO', 'SAMO', 'BOME', 'SLERF', 'PENG', 'GUAC', 'TREMP', 'POPCAT'],
+  Jupiter: ['BONK', 'WIF', 'POPCAT', 'BOME', 'MYRO', 'SLERF', 'SAMO', 'PENG', 'TREMP', 'GUAC'],
+}
+
 const strategies = [
-  'Stop-Loss Guard',
-  'Take-Profit Lock',
-  'Trailing Exit',
-  'Buy the Dip',
-  'Price Floor Buy',
-  'Price Ceiling Sell',
-  'DCA Routine',
-  'Cooldown Protector',
-  'Portfolio Trim',
-  'Risk Cap',
-  'Volatility Mode',
+  { name: 'Stop-Loss Guard', description: 'Automatically exits a position when price declines beyond a defined threshold.', params: { x: 10, y: 10, z: 100 } },
+  { name: 'Take-Profit Lock', description: 'Triggers a partial or full exit once a predefined profit level is reached.', params: { x: 25, y: 10, z: 50 } },
+  { name: 'Trailing Exit', description: 'Monitors price movement after an upward trend and exits when a reversal begins.', params: { x: 30, y: 8, z: 100 } },
+  { name: 'Buy the Dip', description: 'Initiates a buy when price drops sharply within a short time frame.', params: { x: 15, y: 10, z: 20 } },
+  { name: 'Sell the Spike', description: 'Executes a sell action when price spikes rapidly over a short period.', params: { x: 20, y: 10, z: 40 } },
+  { name: 'Price Floor Buy', description: 'Places a buy when price falls below a specified level.', params: { x: 12, y: 10, z: 15 } },
+  { name: 'Price Ceiling Sell', description: 'Triggers a sell when price exceeds a predefined upper level.', params: { x: 30, y: 10, z: 35 } },
+  { name: 'DCA Routine', description: 'Executes recurring purchases at fixed time intervals regardless of price.', params: { x: 5, y: 360, z: 10 } },
+  { name: 'Cooldown Protector', description: 'Prevents strategies from executing too frequently within a short period.', params: { x: 5, y: 30, z: 50 } },
+  { name: 'Portfolio Trim', description: 'Reduces position size when an asset exceeds a defined portfolio allocation.', params: { x: 35, y: 10, z: 20 } },
+  { name: 'Risk Cap', description: 'Limits the maximum amount of capital a strategy can use.', params: { x: 20, y: 10, z: 30 } },
+  { name: 'Volatility Mode', description: 'Adjusts execution size when market volatility increases.', params: { x: 25, y: 20, z: 50 } },
 ]
 
 const MAX_STRATEGIES = 5
 
+// Helper functions for localStorage
+const getStoredStrategies = (): string[] => {
+  try {
+    const stored = localStorage.getItem('logen_selectedStrategies')
+    return stored ? JSON.parse(stored) : []
+  } catch {
+    return []
+  }
+}
+
+const getStoredPausedStrategies = (): string[] => {
+  try {
+    const stored = localStorage.getItem('logen_pausedStrategies')
+    return stored ? JSON.parse(stored) : []
+  } catch {
+    return []
+  }
+}
+
+const getStoredSource = (): string => {
+  return localStorage.getItem('logen_source') || 'Raydium'
+}
+
+const getStoredAsset = (source: string): string => {
+  const stored = localStorage.getItem('logen_asset')
+  if (stored) {
+    const assets = exchanges[source as keyof typeof exchanges] || []
+    // Try to parse as JSON first, if fails use as plain string
+    let parsed: string
+    try {
+      parsed = JSON.parse(stored)
+    } catch {
+      parsed = stored
+    }
+    if (assets.includes(parsed)) {
+      return parsed
+    }
+  }
+  return exchanges['Raydium'][0]
+}
+
 export default function AutomationPage() {
-  const [source, setSource] = useState('Exchange')
-  const [asset, setAsset] = useState('Token')
-  const [selectedStrategies, setSelectedStrategies] = useState<string[]>([])
-  const [pausedStrategies, setPausedStrategies] = useState<Set<string>>(new Set())
+  const [source, setSource] = useState(getStoredSource)
+  const [asset, setAsset] = useState(() => getStoredAsset(getStoredSource()))
+  const [selectedStrategies, setSelectedStrategies] = useState<string[]>(getStoredStrategies)
+  const [pausedStrategies, setPausedStrategies] = useState<Set<string>>(new Set(getStoredPausedStrategies()))
   const [isStrategyOpen, setIsStrategyOpen] = useState(false)
   const strategyRef = useRef<HTMLDivElement>(null)
+
+  const availableAssets = exchanges[source as keyof typeof exchanges] || []
 
   const toggleStrategy = (strategy: string) => {
     setSelectedStrategies((prev) => {
@@ -55,6 +105,14 @@ export default function AutomationPage() {
 
   const isLimitReached = activeAutomationsCount >= MAX_STRATEGIES
 
+  // Save to localStorage when state changes
+  useEffect(() => {
+    localStorage.setItem('logen_source', source)
+    localStorage.setItem('logen_asset', asset)
+    localStorage.setItem('logen_selectedStrategies', JSON.stringify(selectedStrategies))
+    localStorage.setItem('logen_pausedStrategies', JSON.stringify(Array.from(pausedStrategies)))
+  }, [source, asset, selectedStrategies, pausedStrategies])
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (strategyRef.current && !strategyRef.current.contains(event.target as Node)) {
@@ -70,6 +128,8 @@ export default function AutomationPage() {
     name,
     status: pausedStrategies.has(name) ? ('Paused' as const) : ('Active' as const),
   }))
+
+  const activeAutomations = automations.filter(a => a.status === 'Active')
 
   return (
     <DashboardLayout>
@@ -95,7 +155,7 @@ export default function AutomationPage() {
                   borderRight: '1px solid rgba(235, 234, 250, 0.08)'
                 }}
               >
-                
+                 
 
                 <div className="flex flex-col sm:flex-row gap-4 sm:gap-[15px] mb-4 w-full">
                   <div className='flex-1 pb-4 sm:pb-0' style={{ borderBottom: '1px solid rgba(235, 234, 250, 0.08)', borderRight: 'none' }}>
@@ -105,8 +165,11 @@ export default function AutomationPage() {
                     <SelectField
                       label="Source:"
                       value={source}
-                      options={['Exchange', 'DEX', 'Wallet']}
-                      onChange={setSource}
+                      options={Object.keys(exchanges)}
+                      onChange={(value) => {
+                        setSource(value)
+                        setAsset(exchanges[value as keyof typeof exchanges][0])
+                      }}
                     />
                   </div>
                   <div className="hidden sm:block w-[1px] bg-[rgba(235,234,250,0.08)]" />
@@ -115,7 +178,7 @@ export default function AutomationPage() {
                     <SelectField
                       label="Asset:"
                       value={asset}
-                      options={['Token', 'SOL', 'USDC', 'BONK']}
+                      options={availableAssets}
                       onChange={setAsset}
                     />
                   </div>
@@ -136,10 +199,10 @@ export default function AutomationPage() {
                       }}
                       onClick={() => setIsStrategyOpen(!isStrategyOpen)}
                     >
-                      {selectedStrategies.length > 0 ? selectedStrategies[0] : 'Select strategy'}
-                      {selectedStrategies.length > 1 && (
-                        <span className="text-[rgba(235,237,255,0.5)]"> +{selectedStrategies.length - 1}</span>
-                      )}
+                       {activeAutomations.length > 0 ? strategies.find(s => s.name === activeAutomations[0].name)?.name || 'Select strategy' : 'Select strategy'}
+                       {activeAutomations.length > 1 && (
+                         <span className="text-[rgba(235,237,255,0.5)]"> +{activeAutomations.length - 1}</span>
+                       )}
                       <svg
                         className={`absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none transition-transform ${isStrategyOpen ? 'rotate-180' : ''}`}
                         width="12"
@@ -165,20 +228,20 @@ export default function AutomationPage() {
                         }}
                       >
                         {strategies.map((option) => {
-                          const isSelected = selectedStrategies.includes(option)
-                          const isBlocked = !isSelected && isLimitReached
+                          const isSelected = selectedStrategies.includes(option.name)
+                          const isBlocked = !isSelected && activeAutomationsCount >= MAX_STRATEGIES
                           return (
                             <div
-                              key={option}
+                              key={option.name}
                               className={`flex items-center justify-between py-2 ${isBlocked ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:opacity-80'}`}
                               onClick={() => {
                                 if (!isBlocked) {
-                                  toggleStrategy(option)
+                                  toggleStrategy(option.name)
                                 }
                               }}
                             >
                               <span className="font-primary text-[13px] text-[#ebedff] leading-[158%] tracking-[0.02em]">
-                                {option}
+                                {option.name}
                               </span>
                               {/* Checkbox icon */}
                               <div
@@ -218,7 +281,7 @@ export default function AutomationPage() {
               </div>
 
               <p className="font-primary text-[13px] text-[rgba(235,234,250,0.5)] tracking-[0.02em] leading-[158%] mt-auto pt-3">
-                Automatically sells when price drops to limit losses.
+                {activeAutomations.length > 0 ? strategies.find(s => s.name === activeAutomations[0].name)?.description : 'Select a strategy to see its description.'}
               </p>
             </div>
           </div>
@@ -257,32 +320,63 @@ export default function AutomationPage() {
               </h3>
 
               <div className="space-y-[10px]">
-                <ConditionInput
-                  label="If price drops"
-                  value="X"
-                  suffix="%"
-                  color="green"
-                />
-                <ConditionInput
-                  label="Action:"
-                  prefix="Sell"
-                  value="Z"
-                  suffix="%"
-                  color="red"
-                />
-                <ConditionInput
-                  label="Cooldown:"
-                  value="Y"
-                  suffix="min"
-                />
+                {activeAutomations.length > 0 ? (
+                  (() => {
+                    const strategy = strategies.find(s => s.name === activeAutomations[0].name)
+                    if (!strategy) return null
+                    return (
+                      <>
+                        <ConditionInput
+                          label="If price"
+                          value={strategy.params.x > 100 ? 'Threshold' : `drops ${strategy.params.x}%`}
+                          suffix={strategy.params.y > 60 ? 'hours' : 'min'}
+                          color="green"
+                        />
+                        <ConditionInput
+                          label="Action:"
+                          prefix="Execute"
+                          value={`${strategy.params.z}%`}
+                          suffix=""
+                          color="red"
+                        />
+                        <ConditionInput
+                          label="Cooldown:"
+                          value={strategy.params.y > 60 ? `${strategy.params.y / 60} hours` : `${strategy.params.y} min`}
+                          suffix=""
+                        />
+                      </>
+                    )
+                  })()
+                ) : (
+                  <>
+                    <ConditionInput
+                      label="If price drops"
+                      value="X"
+                      suffix="%"
+                      color="green"
+                    />
+                    <ConditionInput
+                      label="Action:"
+                      prefix="Sell"
+                      value="Z"
+                      suffix="%"
+                      color="red"
+                    />
+                    <ConditionInput
+                      label="Cooldown:"
+                      value="Y"
+                      suffix="min"
+                    />
+                  </>
+                )}
               </div>
             </div>
 
             <div className="flex justify-end mt-auto pt-3">
               <button
-                className="font-primary font-medium text-[13px] leading-[158%] tracking-[0.02em] text-[#848de8] underline hover:brightness-110"
+                className={`font-primary font-medium text-[13px] leading-[158%] tracking-[0.02em] ${activeAutomationsCount >= MAX_STRATEGIES ? 'text-[rgba(235,234,250,0.3)] cursor-not-allowed' : 'text-[#848de8] underline hover:brightness-110 cursor-pointer'}`}
               >
-                Add Strategy
+                {activeAutomationsCount >= MAX_STRATEGIES ? 'Automation limit reached' : 'Add Strategy'}
               </button>
             </div>
           </div>
@@ -403,10 +497,10 @@ export default function AutomationPage() {
 
               <div className="text-center">
                 <p className="font-primary font-medium text-[18px] sm:text-[22px] leading-[136%] tracking-[0.01em] text-white">
-                  Active automations: {activeAutomationsCount}
+                  Active automations: {activeAutomationsCount} / {MAX_STRATEGIES}
                 </p>
                 <p className="font-primary font-normal text-[12px] sm:text-[13px] leading-[158%] tracking-[0.02em] text-[rgba(235,234,250,0.5)]">
-                  {activeAutomationsCount >= MAX_STRATEGIES ? 'Automation limit reached.' : `${MAX_STRATEGIES - activeAutomationsCount} slots available.`}
+                  {activeAutomationsCount >= MAX_STRATEGIES ? 'Automation limit reached' : `${MAX_STRATEGIES - activeAutomationsCount} slots available.`}
                 </p>
               </div>
             </div>

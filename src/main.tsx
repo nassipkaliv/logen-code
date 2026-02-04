@@ -30,7 +30,6 @@ createRoot(document.getElementById('root')!).render(
             'wallet_connect'
           ]
         },
-        loginMethods: ['wallet'],
         fundingMethodConfig: {
           moonpay: {
             useSandbox: true
@@ -50,7 +49,7 @@ createRoot(document.getElementById('root')!).render(
         }
       }}
     >
-      <BrowserRouter>
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <App />
       </BrowserRouter>
     </PrivyProvider>
