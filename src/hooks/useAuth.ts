@@ -53,7 +53,6 @@ export async function loginWithPrivy(privyId: string, walletAddress: string) {
   });
 
   if (!response.ok) {
-    const error = await response.json();
     throw new Error('Login failed');
   }
 
