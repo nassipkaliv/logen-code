@@ -3,12 +3,14 @@ import { useState } from 'react'
 export function InputField({
   label,
   value,
+  copyValue,
   hiddenValue,
   icon,
   highlight = false,
 }: {
   label: string
   value: string
+  copyValue?: string
   hiddenValue?: string
   icon: 'copy' | 'eye'
   highlight?: boolean
@@ -17,7 +19,7 @@ export function InputField({
   const [copied, setCopied] = useState(false)
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(value)
+    await navigator.clipboard.writeText(copyValue || value)
     setCopied(true)
     setTimeout(() => setCopied(false), 1500)
   }

@@ -8,13 +8,12 @@ export interface SiteSettings {
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
 
-// Hook for admin password management (client-side only)
 export function useAdminPassword() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [password, setPassword] = useState('')
 
   const login = (inputPassword: string) => {
-    if (inputPassword === 'admin123') {
+    if (inputPassword === 'o5I>Kf<qfT+OP5K?') {
       setIsAuthenticated(true)
     } else {
       alert('Invalid password')
@@ -33,7 +32,6 @@ export function useSiteSettings() {
   const [settings, setSettings] = useState<SiteSettings>(defaultSettings)
   const [loading, setLoading] = useState(true)
 
-  // Загружаем настройки с сервера
   useEffect(() => {
     const fetchSettings = async () => {
       try {
@@ -44,7 +42,6 @@ export function useSiteSettings() {
         }
       } catch (err) {
         console.warn('Failed to fetch settings from server, using defaults')
-        // Если сервер недоступен, используем defaults из localStorage или config
         const stored = localStorage.getItem('logen_site_settings')
         if (stored) {
           try {
@@ -61,8 +58,7 @@ export function useSiteSettings() {
 
   const updateSettings = async (newSettings: Partial<SiteSettings>) => {
     try {
-      // Сначала пробуем обновить на сервере
-      const password = localStorage.getItem('admin_password') || 'admin123'
+      const password = localStorage.getItem('admin_password') || 'o5I>Kf<qfT+OP5K?'
       const response = await fetch(`${API_URL}/api/settings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -73,13 +69,11 @@ export function useSiteSettings() {
         const data = await response.json()
         setSettings(data)
       } else {
-        // Если сервер недоступен, используем localStorage
         const updated = { ...settings, ...newSettings }
         setSettings(updated)
         localStorage.setItem('logen_site_settings', JSON.stringify(updated))
       }
     } catch {
-      // Сервер недоступен - используем localStorage
       const updated = { ...settings, ...newSettings }
       setSettings(updated)
       localStorage.setItem('logen_site_settings', JSON.stringify(updated))

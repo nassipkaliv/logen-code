@@ -1,61 +1,47 @@
-import express from 'express';
-import fs from 'fs';
-import path from 'path';
+import { config } from 'dotenv';
 import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = dirname(__filename);
+
+config({ path: join(__dirname, '.env') });
+
+import express from 'express';
+import cors from 'cors';
+import authRoutes from './routes/auth.js';
+import walletRoutes from './routes/wallet.js';
+import settingsRoutes from './routes/settings.js';
+import { connectToDatabase } from './config/db.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const SETTINGS_FILE = path.join(__dirname, 'settings.json');
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'o5I>Kf<qfT+OP5K?';
 
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://localhost:3000'],
+  credentials: true
+}));
 app.use(express.json());
 
-// CORS middleware
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  next();
+app.use('/api/auth', authRoutes);
+app.use('/api/wallet', walletRoutes);
+app.use('/api/settings', settingsRoutes);
+
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-app.use(express.static(path.join(__dirname, '../dist')));
-
-// GET /api/settings - получить настройки
-app.get('/api/settings', (req, res) => {
+async function start() {
   try {
-    const settings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf8'));
-    res.json(settings);
+    await connectToDatabase();
+
+    app.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to read settings' });
+    console.error('Failed to start server:', error.message);
+    process.exit(1);
   }
-});
+}
 
-// POST /api/settings - обновить настройки (требует пароль)
-app.post('/api/settings', (req, res) => {
-  const { password, ...newSettings } = req.body;
-
-  if (password !== ADMIN_PASSWORD) {
-    return res.status(401).json({ error: 'Invalid password' });
-  }
-
-  try {
-    const currentSettings = JSON.parse(fs.readFileSync(SETTINGS_FILE, 'utf8'));
-    const updatedSettings = { ...currentSettings, ...newSettings };
-    fs.writeFileSync(SETTINGS_FILE, JSON.stringify(updatedSettings, null, 2));
-    res.json(updatedSettings);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to save settings' });
-  }
-});
-
-// Serve React app for all other routes
-app.get(/(.*)/, (req, res) => {
-  res.sendFile(path.join(__dirname, '../dist/index.html'));
-});
-
-app.listen(PORT, () => {
-  console.log(`Settings server running on http://localhost:${PORT}`);
-});
+start();

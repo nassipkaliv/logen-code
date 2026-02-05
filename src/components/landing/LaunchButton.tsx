@@ -1,4 +1,4 @@
-import { usePrivy, useWallets } from '@privy-io/react-auth'
+import { usePrivyAuth } from '../../hooks/usePrivyAuth'
 import { useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -19,27 +19,22 @@ function BlockCorner({ className }: { className?: string }) {
 }
 
 export default function LaunchButton() {
-  const { login, authenticated } = usePrivy()
-  const { wallets } = useWallets()
+  const { loginWithWallet, isAuthenticated } = usePrivyAuth()
   const navigate = useNavigate()
 
-  const hasWallet = wallets.length > 0
-
-
   useEffect(() => {
-    if (authenticated && hasWallet) {
+    if (isAuthenticated) {
       navigate('/dashboard')
     }
-  }, [authenticated, hasWallet, navigate])
+  }, [isAuthenticated, navigate])
 
   const handleClick = useCallback(() => {
-    if (authenticated && hasWallet) {
+    if (isAuthenticated) {
       navigate('/dashboard')
     } else {
-
-      login()
+      loginWithWallet()
     }
-  }, [authenticated, hasWallet, login, navigate])
+  }, [isAuthenticated, loginWithWallet, navigate])
 
   return (
     <div className="relative py-4 md:py-6 px-8 md:px-12">
@@ -72,7 +67,7 @@ export default function LaunchButton() {
           <rect width="1" height="6" fill="white" />
           <rect width="6" height="1" fill="white" />
         </svg>
-        {hasWallet ? 'Launch App' : 'Launch app'}
+        {isAuthenticated ? 'Launch App' : 'Launch app'}
       </button>
     </div>
   )

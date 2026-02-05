@@ -3,7 +3,7 @@ import { useSiteSettings, useAdminPassword } from '../hooks/useSiteSettings'
 import { DashboardLayout } from '../components/dashboard'
 import { PlusCorner } from '../components/ui'
 
-// Corner decoration component
+
 function BlockCorner({ className }: { className?: string }) {
   return (
     <svg
@@ -74,26 +74,33 @@ export default function AdminPage() {
 
   const [formData, setFormData] = useState(settings)
 
-  // Sync formData when settings load
   useEffect(() => {
     setFormData(settings)
   }, [settings])
 
   const handleSave = async () => {
     setSaving(true)
-    // Save password to localStorage for API calls
     localStorage.setItem('admin_password', password)
-    await updateSettings(formData)
-    setSaving(false)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
+    
+    try {
+      await updateSettings(formData)
+      localStorage.setItem('logen_site_settings', JSON.stringify(formData))
+      
+      setSaved(true)
+      setTimeout(() => setSaved(false), 2000)
+      
+      localStorage.removeItem('site_settings_cache')
+    } catch (error) {
+      console.error('Save error:', error)
+    } finally {
+      setSaving(false)
+    }
   }
 
   const handleReset = () => {
     setFormData(defaultSettings)
   }
 
-  // Login form
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#02030e]">
@@ -131,9 +138,6 @@ export default function AdminPage() {
             Login
           </button>
 
-          <p className="mt-4 text-xs text-center text-[rgba(235,234,250,0.5)]">
-            Default password: admin123
-          </p>
         </div>
       </div>
     )
@@ -155,7 +159,6 @@ export default function AdminPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10">
-          {/* Settings Form */}
           <div
             className="relative p-4 sm:p-5"
             style={{
@@ -202,7 +205,6 @@ export default function AdminPage() {
             )}
           </div>
 
-          {/* Preview */}
           <div
             className="relative p-4 sm:p-5"
             style={{
@@ -233,7 +235,6 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* Current Values on Site */}
         <div className="mt-8">
           <h2 className="font-primary text-lg font-medium text-white mb-4">
             Current Site Values

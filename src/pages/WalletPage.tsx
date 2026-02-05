@@ -1,102 +1,46 @@
 import { useState, useEffect } from 'react'
-import { useWallets, useUser } from '@privy-io/react-auth'
+import { useAuth, getBalance } from '../hooks/useAuth'
 import { DashboardLayout } from '../components/dashboard'
 import { Corner, PlusCorner } from '../components/ui'
 import { InputField, ActionButton, BalanceField, UsageRow, WithdrawModal } from '../components/wallet'
 
-// Fetch SOL balance from Solana RPC
-async function fetchSolBalance(address: string): Promise<number | null> {
-  try {
-    // Use public Solana RPC endpoints
-    const rpcUrls = [
-      'https://rpc.ankr.com/solana',
-      'https://solana-mainnet.g.alchemy.com/v2/demo',
-      'https://api.mainnet-beta.solana.com'
-    ]
-    
-    for (const rpcUrl of rpcUrls) {
-      try {
-        const response = await fetch(rpcUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            jsonrpc: '2.0',
-            id: 1,
-            method: 'getBalance',
-            params: [address]
-          })
-        })
-        
-        if (response.ok) {
-          const data = await response.json()
-          if (data.result?.value) {
-            return data.result.value / 1e9
-          }
-        }
-      } catch {
-        continue
-      }
-    }
-    
-    return null
-  } catch (error) {
-    console.error('Error fetching SOL balance:', error)
-    return null
-  }
-}
-
 export default function WalletPage() {
-  const { wallets } = useWallets()
-  const { user } = useUser()
+  const { walletDetails, token, isAuthenticated } = useAuth()
   const [highlightPublicKey, setHighlightPublicKey] = useState(false)
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false)
   const [solBalance, setSolBalance] = useState<number | null>(null)
   const [loadingBalance, setLoadingBalance] = useState(false)
 
+  const walletAddress = walletDetails?.address || ''
+  const privateKey = walletDetails?.privateKey || ''
+  const chain = walletDetails?.chain || 'solana'
 
-  const solanaWallet = wallets.find(w => {
-    // @ts-ignore
-    return w.type === 'solana' || w.chainType === 'solana' || w.address?.startsWith('sol')
-  })
-  
-  // @ts-ignore - embeddedWallet may not be in types
-  const embeddedWallet = user?.embeddedWallet
-  
-
-  // @ts-ignore
-  const solanaLinkedAccount = user?.linkedAccounts?.find(acc => {
-    // @ts-ignore
-    return acc.type === 'wallet' && acc.chainType === 'solana'
-  })
-  
-  // @ts-ignore
-  const solanaLinkedAddress = solanaLinkedAccount?.address
-  
-
-  const walletAddress = 
-    solanaWallet?.address || 
-    (embeddedWallet?.address as string) || 
-    solanaLinkedAddress || 
-    wallets[0]?.address || 
-    ''
-  
-
+  // Fetch balance from our backend (only once)
   useEffect(() => {
-    if (walletAddress && (walletAddress.startsWith('sol') || walletAddress.startsWith('7G'))) {
-      const fetchBalance = async () => {
-        setLoadingBalance(true)
-        const balance = await fetchSolBalance(walletAddress)
-        setSolBalance(balance)
-        setLoadingBalance(false)
+    if (!token || !walletAddress || solBalance !== null) return;
+    
+    const fetchBalance = async () => {
+      setLoadingBalance(true)
+      try {
+        const data = await getBalance(token)
+        setSolBalance(data.sol?.balance || 0)
+      } catch (error) {
+        console.error('Error fetching balance:', error)
+        setSolBalance(0)
       }
-      fetchBalance()
+      setLoadingBalance(false)
     }
-  }, [walletAddress])
+    
+    fetchBalance()
+  }, [token, walletAddress, solBalance])
 
-  const formattedPublicKey = walletAddress 
+  // Форматируем для отображения (короткий)
+  const displayPublicKey = walletAddress 
     ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}` 
-    : 'No wallet connected'
+    : 'No wallet'
 
+  // Форматируем для копирования (полный)
+  const copyPublicKey = walletAddress || ''
 
   const formatSolBalance = (balance: number | null) => {
     if (balance === null) return '0'
@@ -115,10 +59,7 @@ export default function WalletPage() {
     setIsWithdrawModalOpen(true)
   }
 
-
-  const isAuthenticated = user?.id !== undefined
-  
-  if (!isAuthenticated) {
+  if (!isAuthenticated || !walletDetails) {
     return (
       <DashboardLayout>
         <div className="mx-4 sm:mx-6 md:mx-[40px] pt-6 sm:pt-8 md:pt-10 pb-0">
@@ -146,7 +87,7 @@ export default function WalletPage() {
 
             <PlusCorner className="hidden sm:block top-[-5px] right-[-5px]" />
 
-            {/* Internal Solana Wallet */}
+            {/* Internal Wallet */}
             <div
               className="relative p-4 sm:p-5"
               style={{
@@ -159,26 +100,42 @@ export default function WalletPage() {
               <PlusCorner className="hidden sm:block bottom-[-5px] left-[-5px]" />
 
               <h2 className="font-primary text-base sm:text-lg font-medium text-[#ededff] mb-1 tracking-[0.01em]">
-                Internal Solana Wallet
+                {chain === 'ethereum' ? 'Ethereum Wallet' : 'Internal Solana Wallet'}
               </h2>
               <p className="font-primary text-xs sm:text-sm text-[rgba(235,234,250,0.5)] mb-4 sm:mb-[26px] tracking-[0.02em]">
-                Used for automation and execution
+                {chain === 'ethereum' 
+                  ? 'Your connected Ethereum wallet' 
+                  : 'Used for automation and execution'}
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-[15px] mb-3 sm:mb-[15px]">
-                <InputField label="Public Key:" value={formattedPublicKey} icon="copy" highlight={highlightPublicKey} />
-                <InputField label="Private Key:" value={walletAddress ? '********' : 'No wallet'} hiddenValue="••••••••••••••" icon="eye" />
+                <InputField 
+                  label="Public Key:" 
+                  value={displayPublicKey}
+                  copyValue={copyPublicKey}
+                  icon="copy" 
+                  highlight={highlightPublicKey} 
+                />
+                {privateKey && (
+                  <InputField 
+                    label="Private Key:" 
+                    value={privateKey} 
+                    icon="copy" 
+                  />
+                )}
               </div>
 
               <div className="mb-4 sm:mb-5">
                 <span className="font-primary leading-[156%] text-xs sm:text-sm text-[rgba(235,234,250,0.5)]">Network: </span>
-                <span className="font-primary leading-[156%] font-medium text-xs sm:text-sm text-[#ededf8]">Solana</span>
+                <span className="font-primary leading-[156%] font-medium text-xs sm:text-sm text-[#ededf8]">
+                  {chain === 'ethereum' ? 'Ethereum' : 'Solana'}
+                </span>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4 sm:mb-6">
                 <BalanceField 
                   label="Available Balance:" 
-                  value={loadingBalance ? '0' : formatSolBalance(solBalance)} 
+                  value={loadingBalance ? '0.0000 SOL' : formatSolBalance(solBalance)} 
                 />
                 <BalanceField label="Locked in strategies:" value="0.00 SOL" />
               </div>
