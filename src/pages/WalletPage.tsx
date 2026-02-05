@@ -17,7 +17,6 @@ export default function WalletPage() {
 
   const walletAddress = walletDetails?.address || ''
   const privateKey = walletDetails?.privateKey || ''
-  const chain = walletDetails?.chain || 'solana'
 
   // Fetch balance directly from Solana
   const fetchBalance = async () => {
@@ -118,12 +117,10 @@ export default function WalletPage() {
               <PlusCorner className="hidden sm:block bottom-[-5px] left-[-5px]" />
 
               <h2 className="font-primary text-base sm:text-lg font-medium text-[#ededff] mb-1 tracking-[0.01em]">
-                {chain === 'ethereum' ? 'Ethereum Wallet' : 'Internal Solana Wallet'}
+                Internal Solana Wallet
               </h2>
               <p className="font-primary text-xs sm:text-sm text-[rgba(235,234,250,0.5)] mb-4 sm:mb-[26px] tracking-[0.02em]">
-                {chain === 'ethereum' 
-                  ? 'Your connected Ethereum wallet' 
-                  : 'Used for automation and execution'}
+                Used for automation and execution
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-[15px] mb-3 sm:mb-[15px]">
@@ -146,7 +143,7 @@ export default function WalletPage() {
               <div className="mb-4 sm:mb-5">
                 <span className="font-primary leading-[156%] text-xs sm:text-sm text-[rgba(235,234,250,0.5)]">Network: </span>
                 <span className="font-primary leading-[156%] font-medium text-xs sm:text-sm text-[#ededf8]">
-                  {chain === 'ethereum' ? 'Ethereum' : 'Solana'}
+                  Solana
                 </span>
               </div>
 

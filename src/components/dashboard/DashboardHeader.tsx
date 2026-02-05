@@ -100,16 +100,6 @@ export default function DashboardHeader() {
       }
     }
 
-
-    const firstWallet = wallets[0]
-    if (firstWallet?.address) {
-      return {
-        type: 'ethereum',
-        address: firstWallet.address,
-        displayAddress: `${firstWallet.address.slice(0, 4)}...${firstWallet.address.slice(-4)}`
-      }
-    }
-
     return { type: null, address: null, displayAddress: 'Not connected' }
   }, [wallets])
 
