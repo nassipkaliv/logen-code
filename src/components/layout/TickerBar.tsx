@@ -52,7 +52,7 @@ export default function TickerBar() {
 
         const ids = COINS.map(c => c.id).join(',');
         const response = await fetch(
-          `/api/coingecko/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`
+          `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`
         );
         
         if (!response.ok) {

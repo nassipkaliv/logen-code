@@ -208,7 +208,7 @@ export default function DashboardPage() {
 
         const ids = CRYPTO_COINS.map(c => c.id).join(',')
         const response = await fetch(
-          `/api/coingecko/coins/markets?vs_currency=usd&ids=${ids}&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=24h`
+          `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids}&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=24h`
         )
         
         if (!response.ok) {

@@ -1,20 +1,100 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL, Keypair } from '@solana/web3.js'
+import bs58 from 'bs58'
 import { PlusCorner, SolanaIcon } from '../ui'
+import { useAuth } from '../../hooks/useAuth'
+
+// Solana RPC endpoint
+const RPC_ENDPOINT = 'https://solana.publicnode.com'
 
 export function WithdrawModal({
   isOpen,
   onClose,
+  balance,
 }: {
   isOpen: boolean
   onClose: () => void
+  balance: number | null
 }) {
+  const { walletDetails } = useAuth()
   const [withdrawAmount, setWithdrawAmount] = useState('')
   const [destinationAddress, setDestinationAddress] = useState('')
-  const availableBalance = '12.5432'
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string | null>(null)
+  
+  const availableBalance = balance !== null ? balance : 0
 
   const handleMaxClick = () => {
-    setWithdrawAmount(availableBalance)
+    // Leave 0.001 SOL for fees
+    const maxWithdraw = Math.max(0, availableBalance - 0.001)
+    setWithdrawAmount(maxWithdraw.toString())
+  }
+
+  const handleWithdraw = async () => {
+    if (!walletDetails?.privateKey) {
+      setError('No private key available')
+      return
+    }
+    
+    const amount = parseFloat(withdrawAmount)
+    if (!amount || amount <= 0) {
+      setError('Invalid amount')
+      return
+    }
+    
+    // Check if trying to withdraw more than available (minus min rent)
+    if (amount > availableBalance - 0.001) {
+      setError(`Minimum 0.001 SOL must remain for fees`)
+      return
+    }
+    
+    if (!destinationAddress) {
+      setError('Destination address required')
+      return
+    }
+    
+    try {
+      setIsLoading(true)
+      setError(null)
+      setSuccess(null)
+      
+      // Create connection
+      const connection = new Connection(RPC_ENDPOINT, 'confirmed')
+      
+      // Create keypair from private key (base58 format)
+      const privateKeyBytes = bs58.decode(walletDetails.privateKey)
+      const fromKeypair = Keypair.fromSecretKey(privateKeyBytes)
+      
+      // Create transaction
+      const transaction = new Transaction().add(
+        SystemProgram.transfer({
+          fromPubkey: fromKeypair.publicKey,
+          toPubkey: new PublicKey(destinationAddress),
+          lamports: Math.floor(amount * LAMPORTS_PER_SOL),
+        })
+      )
+      
+      // Sign and send transaction
+      transaction.feePayer = fromKeypair.publicKey
+      const { blockhash } = await connection.getLatestBlockhash('confirmed')
+      transaction.recentBlockhash = blockhash
+      
+      transaction.sign(fromKeypair)
+      const signature = await connection.sendRawTransaction(transaction.serialize())
+      
+      // Wait for confirmation
+      await connection.confirmTransaction(signature, 'confirmed')
+      
+      setSuccess(`Withdrawn! TX: ${signature.slice(0, 8)}...`)
+      setWithdrawAmount('')
+      
+    } catch (err: any) {
+      setError(err.message || 'Transaction failed')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -136,7 +216,7 @@ export function WithdrawModal({
                         borderRadius: '5px',
                       }}
                     >
-                      <span className="font-primary text-sm font-medium text-[#ebedff]">0 SOL</span>
+                      <span className="font-primary text-sm font-medium text-[#ebedff]">{balance !== null ? `${balance.toFixed(4)} SOL` : 'Loading...'}</span>
                     </div>
 
                     <PlusCorner className="bottom-[-5px] right-[-5px]" />
@@ -234,6 +314,17 @@ export function WithdrawModal({
                   }}>
                     <PlusCorner className="top-[-5px] left-[-5px]" />
                     <PlusCorner className="bottom-[-5px] right-[-5px]" />
+                    {/* Error/Success message */}
+                    {error && (
+                      <div className="text-center py-2 text-red-400 font-primary text-xs">
+                        {error}
+                      </div>
+                    )}
+                    {success && (
+                      <div className="text-center py-2 text-green-400 font-primary text-xs">
+                        {success}
+                      </div>
+                    )}
                     {/* Withdraw Button */}
                     <div className="relative flex justify-center p-[5px] w-fit mx-auto"
                     style={{
@@ -244,13 +335,15 @@ export function WithdrawModal({
                         <PlusCorner className="bottom-[-5px] left-[-5px]" />
                         <PlusCorner className="bottom-[-5px] right-[-5px]" />
                       <button
-                        className="relative px-12 p-[5px] font-primary text-[18px] font-semibold text-[#ebeafa] tracking-[0.02em] leading-[122%] transition-all hover:brightness-110 active:scale-[0.98]"
+                        onClick={handleWithdraw}
+                        disabled={isLoading}
+                        className="relative px-12 p-[5px] font-primary text-[18px] font-semibold text-[#ebeafa] tracking-[0.02em] leading-[122%] transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{
                           background: '#111126',
                           borderRadius: '5px',
                         }}
                       >
-                        Withdraw
+                        {isLoading ? 'Processing...' : 'Withdraw'}
                       </button>
                     </div>
                   </div>

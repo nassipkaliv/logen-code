@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react'
-import { useAuth, getBalance } from '../hooks/useAuth'
+import { Connection, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js'
+import { useAuth } from '../hooks/useAuth'
 import { DashboardLayout } from '../components/dashboard'
 import { Corner, PlusCorner } from '../components/ui'
 import { InputField, ActionButton, BalanceField, UsageRow, WithdrawModal } from '../components/wallet'
 
+// Solana RPC endpoint (Mainnet - publicnode)
+const RPC_ENDPOINT = 'https://solana.publicnode.com'
+
 export default function WalletPage() {
-  const { walletDetails, token, isAuthenticated } = useAuth()
+  const { walletDetails, isAuthenticated } = useAuth()
   const [highlightPublicKey, setHighlightPublicKey] = useState(false)
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false)
   const [solBalance, setSolBalance] = useState<number | null>(null)
@@ -15,24 +19,37 @@ export default function WalletPage() {
   const privateKey = walletDetails?.privateKey || ''
   const chain = walletDetails?.chain || 'solana'
 
-  // Fetch balance from our backend (only once)
-  useEffect(() => {
-    if (!token || !walletAddress || solBalance !== null) return;
+  // Fetch balance directly from Solana
+  const fetchBalance = async () => {
+    if (!walletAddress) return
+    setLoadingBalance(true)
     
-    const fetchBalance = async () => {
-      setLoadingBalance(true)
-      try {
-        const data = await getBalance(token)
-        setSolBalance(data.sol?.balance || 0)
-      } catch (error) {
-        console.error('Error fetching balance:', error)
-        setSolBalance(0)
-      }
-      setLoadingBalance(false)
+    try {
+      const connection = new Connection(RPC_ENDPOINT, 'confirmed')
+      const publicKey = new PublicKey(walletAddress)
+      
+      // Add timeout wrapper
+      const lamports = await Promise.race([
+        connection.getBalance(publicKey),
+        new Promise<number>((_, reject) => 
+          setTimeout(() => reject(new Error('RPC timeout')), 10000)
+        )
+      ])
+      
+      const balance = lamports / LAMPORTS_PER_SOL
+      setSolBalance(balance)
+    } catch (error: any) {
+      setSolBalance(null)
     }
     
+    setLoadingBalance(false)
+  }
+  
+  // Initial fetch on mount
+  useEffect(() => {
+    if (!walletAddress) return;
     fetchBalance()
-  }, [token, walletAddress, solBalance])
+  }, [walletAddress])
 
   // Форматируем для отображения (короткий)
   const displayPublicKey = walletAddress 
@@ -43,7 +60,7 @@ export default function WalletPage() {
   const copyPublicKey = walletAddress || ''
 
   const formatSolBalance = (balance: number | null) => {
-    if (balance === null) return '0'
+    if (balance === null) return 'RPC Error'
     const formatted = balance >= 1 
       ? balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 })
       : balance.toFixed(4)
@@ -76,6 +93,7 @@ export default function WalletPage() {
       <WithdrawModal
         isOpen={isWithdrawModalOpen}
         onClose={() => setIsWithdrawModalOpen(false)}
+        balance={solBalance}
       />
       <div className="mx-4 sm:mx-6 md:mx-[40px] pt-6 sm:pt-8 md:pt-10 pb-0">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10">
@@ -135,7 +153,7 @@ export default function WalletPage() {
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4 sm:mb-6">
                 <BalanceField 
                   label="Available Balance:" 
-                  value={loadingBalance ? '0.0000 SOL' : formatSolBalance(solBalance)} 
+                  value={loadingBalance ? 'Loading...' : formatSolBalance(solBalance)} 
                 />
                 <BalanceField label="Locked in strategies:" value="0.00 SOL" />
               </div>
