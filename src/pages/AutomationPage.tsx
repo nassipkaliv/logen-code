@@ -1,7 +1,8 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { DashboardLayout } from '../components/dashboard'
 import { Corner, PlusCorner } from '../components/ui'
 import { SelectField, ConditionInput, AutomationItem, CapacityBox } from '../components/automation'
+import { useAuth, getBalance } from '../hooks'
 
 const exchanges = {
   Raydium: ['BONK', 'WIF', 'POPCAT', 'BOME', 'SLERF', 'MYRO', 'SAMO', 'PENG', 'GUAC', 'TREMP'],
@@ -68,16 +69,41 @@ const getStoredAsset = (source: string): string => {
 }
 
 export default function AutomationPage() {
+  const { user, token, isAuthenticated } = useAuth()
   const [source, setSource] = useState(getStoredSource)
   const [asset, setAsset] = useState(() => getStoredAsset(getStoredSource()))
   const [selectedStrategies, setSelectedStrategies] = useState<string[]>(getStoredStrategies)
   const [pausedStrategies, setPausedStrategies] = useState<Set<string>>(new Set(getStoredPausedStrategies()))
   const [isStrategyOpen, setIsStrategyOpen] = useState(false)
+  const [solBalance, setSolBalance] = useState<number>(0)
+  const [isLoadingBalance, setIsLoadingBalance] = useState(false)
   const strategyRef = useRef<HTMLDivElement>(null)
 
+  const isBalanceZero = solBalance === 0 && !isLoadingBalance && isAuthenticated
   const availableAssets = exchanges[source as keyof typeof exchanges] || []
 
+  // Fetch SOL balance on mount
+  useEffect(() => {
+    const fetchBalance = async () => {
+      if (token) {
+        setIsLoadingBalance(true)
+        try {
+          const data = await getBalance(token)
+          setSolBalance(data?.sol?.balance || 0)
+        } catch (error) {
+          console.error('Failed to fetch balance:', error)
+          setSolBalance(0)
+        } finally {
+          setIsLoadingBalance(false)
+        }
+      }
+    }
+
+    fetchBalance()
+  }, [token, isAuthenticated])
+
   const toggleStrategy = (strategy: string) => {
+    if (isBalanceZero) return
     setSelectedStrategies((prev) => {
       if (prev.includes(strategy)) {
         return prev.filter((s) => s !== strategy)
@@ -90,6 +116,7 @@ export default function AutomationPage() {
   }
 
   const togglePauseStrategy = (strategy: string) => {
+    if (isBalanceZero) return
     setPausedStrategies((prev) => {
       const newSet = new Set(prev)
       if (newSet.has(strategy)) {
@@ -165,8 +192,10 @@ export default function AutomationPage() {
                       value={source}
                       options={Object.keys(exchanges)}
                       onChange={(value) => {
-                        setSource(value)
-                        setAsset(exchanges[value as keyof typeof exchanges][0])
+                        if (!isBalanceZero) {
+                          setSource(value)
+                          setAsset(exchanges[value as keyof typeof exchanges][0])
+                        }
                       }}
                     />
                   </div>
@@ -177,7 +206,11 @@ export default function AutomationPage() {
                       label="Asset:"
                       value={asset}
                       options={availableAssets}
-                      onChange={setAsset}
+                      onChange={(value) => {
+                        if (!isBalanceZero) {
+                          setAsset(value)
+                        }
+                      }}
                     />
                   </div>
                 </div>
@@ -189,7 +222,7 @@ export default function AutomationPage() {
                   <div className="relative">
                     {/* Selected value display */}
                     <div
-                      className="w-full px-3 py-2.5 sm:py-3 font-primary text-xs sm:text-[13px] text-[#ebedff] leading-[158%] tracking-[0.02em] cursor-pointer"
+                      className={`w-full px-3 py-2.5 sm:py-3 font-primary text-xs sm:text-[13px] text-[#ebedff] leading-[158%] tracking-[0.02em] ${isBalanceZero ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
                       style={{
                         backdropFilter: 'blur(10px)',
                         boxShadow: 'inset 0 1px 1px 0 rgba(132, 141, 232, 0.2), inset 0 0 8px 0 rgba(132, 141, 232, 0.06), inset 0 -1px 1px 0 rgba(132, 141, 232, 0.2)',
@@ -227,7 +260,7 @@ export default function AutomationPage() {
                       >
                         {strategies.map((option) => {
                           const isSelected = selectedStrategies.includes(option.name)
-                          const isBlocked = !isSelected && activeAutomationsCount >= MAX_STRATEGIES
+                          const isBlocked = !isSelected && (activeAutomationsCount >= MAX_STRATEGIES || isBalanceZero)
                           return (
                             <div
                               key={option.name}
@@ -372,9 +405,9 @@ export default function AutomationPage() {
 
             <div className="flex justify-end mt-auto pt-3">
               <button
-                className={`font-primary font-medium text-[13px] leading-[158%] tracking-[0.02em] ${activeAutomationsCount >= MAX_STRATEGIES ? 'text-[rgba(235,234,250,0.3)] cursor-not-allowed' : 'text-[#848de8] underline hover:brightness-110 cursor-pointer'}`}
+                className="font-primary font-medium text-[13px] leading-[158%] tracking-[0.02em] text-[rgba(132,141,232,0.6)] underline hover:brightness-110 cursor-pointer transition-opacity"
               >
-                {activeAutomationsCount >= MAX_STRATEGIES ? 'Automation limit reached' : 'Add Strategy'}
+                Add Strategy
               </button>
             </div>
           </div>
@@ -428,8 +461,14 @@ export default function AutomationPage() {
                         name={automation.name}
                         status={automation.status}
                         onToggle={() => togglePauseStrategy(automation.name)}
+                        disabled={isBalanceZero}
                       />
                     ))
+                  )}
+                  {isBalanceZero && (
+                    <p className="font-primary text-[12px] text-[#ff587a] tracking-[0.02em] leading-[158%] text-center mt-3">
+                      Automations will remain inactive until your wallet is funded.
+                    </p>
                   )}
                 </div>
               </div>
