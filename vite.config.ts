@@ -3,6 +3,15 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      // Polyfills for Solana
+      './runtimeConfig': './runtimeConfig.browser',
+    },
+  },
+  define: {
+    'global': 'window',
+  },
   server: {
     proxy: {
       '/api/coingecko': {

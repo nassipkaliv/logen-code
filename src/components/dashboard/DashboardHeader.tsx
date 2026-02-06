@@ -1,8 +1,8 @@
-import { useWallets, usePrivy } from '@privy-io/react-auth'
+import { useUser, useLogout } from '@privy-io/react-auth'
 import { useMemo, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 
-// Corner decoration component for buttons
+
 function Corner({ className }: { className?: string }) {
   return (
     <svg
@@ -18,7 +18,7 @@ function Corner({ className }: { className?: string }) {
   )
 }
 
-// Header corner decoration (horizontal)
+
 function HeaderCorner({ className }: { className?: string }) {
   return (
     <svg
@@ -63,36 +63,16 @@ const navItems = [
 ]
 
 export default function DashboardHeader() {
-  const { wallets } = useWallets()
-  const { logout } = usePrivy()
+  const { user } = useUser()
+  const { logout } = useLogout()
   const [showLogout, setShowLogout] = useState(false)
   const navigate = useNavigate()
 
-
   const walletInfo = useMemo(() => {
-    if (wallets.length === 0) {
-      return { type: null, address: null, displayAddress: 'Not connected' }
-    }
+    // Get Solana address from user.wallet
+    const solanaWallet = user?.wallet
 
-
-    const solanaWallet = wallets.find((wallet) => {
-      const chainId = wallet.chainId?.toLowerCase() || ''
-      const type = wallet.type?.toLowerCase() || ''
-      const meta = wallet.meta?.name?.toLowerCase() || ''
-      
-      return (
-        type === 'solana' ||
-        chainId === 'solana' ||
-        chainId.includes('solana') ||
-        chainId === '101' ||
-        chainId === '0x65' ||
-        meta.includes('phantom') ||
-        meta.includes('solflare') ||
-        meta.includes('backpack')
-      )
-    })
-
-    if (solanaWallet?.address) {
+    if (solanaWallet?.address && solanaWallet.chainType === 'solana') {
       return {
         type: 'solana',
         address: solanaWallet.address,
@@ -101,7 +81,7 @@ export default function DashboardHeader() {
     }
 
     return { type: null, address: null, displayAddress: 'Not connected' }
-  }, [wallets])
+  }, [user])
 
   const handleWalletClick = () => {
     if (walletInfo.address) {

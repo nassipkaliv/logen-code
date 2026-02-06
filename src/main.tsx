@@ -2,13 +2,14 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { PrivyProvider } from '@privy-io/react-auth'
+import { toSolanaWalletConnectors } from '@privy-io/react-auth/solana'
 import App from './App'
 import './styles/index.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <PrivyProvider
-      appId="cml8bwk6j00fxkw0bazrr0enp"
+      appId="cml7swmq300exl80cp3kuzdhp"
       config={{
         appearance: {
           accentColor: '#5d69d7',
@@ -17,7 +18,6 @@ createRoot(document.getElementById('root')!).render(
           logo: 'https://auth.privy.io/logos/privy-logo.png',
           walletChainType: 'solana-only' as const,
           walletList: [
-            'detected_solana_wallets',
             'phantom',
             'solflare',
             'backpack',
@@ -43,6 +43,11 @@ createRoot(document.getElementById('root')!).render(
         },
         mfa: {
           noPromptOnMfaRequired: false
+        },
+        externalWallets: {
+          solana: {
+            connectors: toSolanaWalletConnectors()
+          }
         }
       }}
     >
