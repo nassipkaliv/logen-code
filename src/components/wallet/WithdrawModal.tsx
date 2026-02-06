@@ -260,7 +260,7 @@ export function WithdrawModal({
                     </div>
                     </div>
 
-                    <div className=''>
+                    <div className='flex flex-col items-end'>
                       <button
                         type="button"
                         onClick={handleMaxClick}
@@ -268,7 +268,7 @@ export function WithdrawModal({
                       >
                         MAX
                       </button>
-                      <div className='flex gap-1'>
+                      <div className='flex gap-1 items-center'>
                         <SolanaIcon />
                         <span className='font-primary font-medium text-[22px] leading-[100%] tracking-[0.01em] text-[#ebeafa]'>SOL</span>
                       </div>
