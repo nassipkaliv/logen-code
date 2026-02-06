@@ -79,8 +79,10 @@ export default function AutomationPage() {
   const [isLoadingBalance, setIsLoadingBalance] = useState(false)
   const strategyRef = useRef<HTMLDivElement>(null)
 
-  const isBalanceZero = solBalance === 0 && !isLoadingBalance && isAuthenticated
-  console.log('[DEBUG] isBalanceZero:', isBalanceZero, 'solBalance:', solBalance, 'isLoadingBalance:', isLoadingBalance, 'isAuthenticated:', isAuthenticated)
+const MIN_BALANCE = 0.0001
+
+  const isBalanceZero = solBalance < MIN_BALANCE && !isLoadingBalance && isAuthenticated
+  console.log('[DEBUG] isBalanceZero:', isBalanceZero, 'solBalance:', solBalance, 'MIN_BALANCE:', MIN_BALANCE)
   const availableAssets = exchanges[source as keyof typeof exchanges] || []
 
   // Fetch SOL balance on mount
