@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useSiteSettings } from '../../hooks/useSiteSettings'
+import LaunchButton from './LaunchButton'
 
 // Corner decoration component
 function Corner({ className }: { className?: string }) {
@@ -35,26 +36,6 @@ function FooterButton({
       <Corner className="bottom-0 left-0 -rotate-90" />
       {children}
     </a>
-  )
-}
-
-function FooterButtonLink({
-  children,
-  to,
-  className,
-}: {
-  children: React.ReactNode
-  to: string
-  className?: string
-}) {
-  return (
-    <Link to={to} className={`relative header-btn ${className}`}>
-      <Corner className="top-0 left-0" />
-      <Corner className="top-0 right-0 rotate-90" />
-      <Corner className="bottom-0 right-0 rotate-180" />
-      <Corner className="bottom-0 left-0 -rotate-90" />
-      {children}
-    </Link>
   )
 }
 
@@ -123,12 +104,7 @@ export default function Footer() {
                   </svg>
                 </FooterButton>
 
-                <FooterButtonLink
-                  to="/dashboard"
-                  className="px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 font-primary text-[9px] sm:text-[10px] md:text-sm font-medium leading-[143%] tracking-[0.01em] text-center text-[#ebedff]"
-                >
-                  Launch App
-                </FooterButtonLink>
+                <LaunchButton />
               </div>
             </div>
 

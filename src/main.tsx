@@ -15,7 +15,7 @@ createRoot(document.getElementById('root')!).render(
           accentColor: '#5d69d7',
           theme: '#02030e',
           showWalletLoginFirst: false,
-          logo: 'https://auth.privy.io/logos/privy-logo.png',
+          logo: 'public/assets/Logenlogotypes/Logen Logotype PNG 1png.png',
           walletChainType: 'solana-only' as const,
           walletList: [
             'phantom',
