@@ -15,7 +15,7 @@ createRoot(document.getElementById('root')!).render(
           accentColor: '#5d69d7',
           theme: '#02030e',
           showWalletLoginFirst: false,
-          logo: 'public/assets/Logenlogotypes/Logen Logotype PNG 1png.png',
+          logo: 'https://image2url.com/r2/default/images/1770408036138-896d9876-4857-4987-9051-4c703225ca08.png',
           walletChainType: 'solana-only' as const,
           walletList: [
             'phantom',
