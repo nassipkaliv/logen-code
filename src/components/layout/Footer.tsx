@@ -74,7 +74,7 @@ export default function Footer() {
             <div className="flex items-center justify-between h-11 md:h-14 lg:h-16">
               {/* Logo */}
               <Link to="/" className="flex items-center gap-1.5 sm:gap-2 md:gap-[10px] shrink-0">
-                <img src="/assets/img/logo.png" alt="logo" className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
+                <img src="/assets/img/logo.png" alt="logo"  />
                 <span className="font-mono text-white font-semibold text-xs sm:text-sm md:text-base lg:text-lg uppercase">LOGEN</span>
               </Link>
 

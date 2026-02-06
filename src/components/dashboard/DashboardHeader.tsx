@@ -118,7 +118,7 @@ export default function DashboardHeader() {
 
         <div className="relative flex items-center justify-between h-12 sm:h-14 md:h-16 px-3 sm:px-4 md:px-6">
           <Link to="/" className="flex items-center gap-1.5 sm:gap-2 md:gap-[10px] shrink-0">
-            <img src="/assets/img/logo.png" alt="logo" className="w-5 h-5 sm:w-5 sm:h-5 md:w-6 md:h-6" />
+            <img src="/assets/img/logo.png" alt="logo"  />
             <span className="font-mono text-white font-semibold text-sm sm:text-sm md:text-base lg:text-lg uppercase">LOGEN</span>
           </Link>
 
