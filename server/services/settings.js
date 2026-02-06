@@ -12,6 +12,7 @@ const defaultSettings = {
   tagline: 'AI-Powered DeFi Automation',
   xUrl: 'https://x.com/logen',
   tickerText: '',
+  tokenAnnouncement: '$Logen token launch coming soon. Contract address will appear here.',
   features: ['Smart Routing', 'MEV Protection', 'Auto-Compounding'],
   supportedChains: ['solana', 'ethereum'],
   supportedWallets: ['phantom', 'solflare', 'metamask', 'coinbase']

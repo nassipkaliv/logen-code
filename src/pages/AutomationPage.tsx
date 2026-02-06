@@ -1,8 +1,12 @@
 import { useState, useRef, useEffect } from 'react'
+import { Connection, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { DashboardLayout } from '../components/dashboard'
 import { Corner, PlusCorner } from '../components/ui'
 import { SelectField, ConditionInput, AutomationItem, CapacityBox } from '../components/automation'
-import { useAuth, getBalance } from '../hooks'
+import { useAuth } from '../hooks'
+
+// Solana RPC endpoint (Mainnet - publicnode)
+const RPC_ENDPOINT = 'https://solana.publicnode.com'
 
 const exchanges = {
   Raydium: ['BONK', 'WIF', 'POPCAT', 'BOME', 'SLERF', 'MYRO', 'SAMO', 'PENG', 'GUAC', 'TREMP'],
@@ -69,7 +73,7 @@ const getStoredAsset = (source: string): string => {
 }
 
 export default function AutomationPage() {
-  const { token, isAuthenticated } = useAuth()
+  const { isAuthenticated, walletDetails } = useAuth()
   const [source, setSource] = useState(getStoredSource)
   const [asset, setAsset] = useState(() => getStoredAsset(getStoredSource()))
   const [selectedStrategies, setSelectedStrategies] = useState<string[]>(getStoredStrategies)
@@ -81,22 +85,33 @@ export default function AutomationPage() {
 
 const MIN_BALANCE = 0.0001
 
-  const isBalanceZero = solBalance < MIN_BALANCE && !isLoadingBalance && isAuthenticated
-  console.log('[DEBUG] isBalanceZero:', isBalanceZero, 'solBalance:', solBalance, 'MIN_BALANCE:', MIN_BALANCE)
+  const isBalanceZero = solBalance < MIN_BALANCE && !isLoadingBalance && !!walletDetails?.address
+  console.log('[DEBUG] isBalanceZero:', isBalanceZero, 'solBalance:', solBalance, 'walletAddress:', walletDetails?.address)
   const availableAssets = exchanges[source as keyof typeof exchanges] || []
 
-  // Fetch SOL balance on mount
+  // Fetch SOL balance directly from Solana RPC
   useEffect(() => {
     const fetchBalance = async () => {
-      if (token) {
+      if (walletDetails?.address) {
         setIsLoadingBalance(true)
         try {
-          console.log('[DEBUG] Fetching balance with token:', token?.substring(0, 20) + '...')
-          const data = await getBalance(token)
-          console.log('[DEBUG] Balance data received:', data)
-          setSolBalance(data?.sol?.balance || 0)
-        } catch (error) {
-          console.error('Failed to fetch balance:', error)
+          console.log('[DEBUG] Fetching balance from Solana RPC for:', walletDetails.address)
+          const connection = new Connection(RPC_ENDPOINT, 'confirmed')
+          const publicKey = new PublicKey(walletDetails.address)
+          
+          // Add timeout wrapper
+          const lamports = await Promise.race([
+            connection.getBalance(publicKey),
+            new Promise<number>((_, reject) => 
+              setTimeout(() => reject(new Error('RPC timeout')), 10000)
+            )
+          ])
+          
+          const balance = lamports / LAMPORTS_PER_SOL
+          console.log('[DEBUG] Balance from RPC:', balance)
+          setSolBalance(balance)
+        } catch (error: any) {
+          console.error('Failed to fetch balance from RPC:', error)
           setSolBalance(0)
         } finally {
           setIsLoadingBalance(false)
@@ -105,7 +120,7 @@ const MIN_BALANCE = 0.0001
     }
 
     fetchBalance()
-  }, [token, isAuthenticated])
+  }, [walletDetails?.address, isAuthenticated])
 
   const toggleStrategy = (strategy: string) => {
     if (isBalanceZero) return

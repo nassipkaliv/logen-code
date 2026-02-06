@@ -1,4 +1,11 @@
+import { useSiteSettings } from '../../hooks'
+
 export default function HeaderTicker() {
+  const { settings } = useSiteSettings()
+  
+  // Don't render if no announcement text
+  if (!settings.tokenAnnouncement) return null
+  
   return (
     <div
       className="w-full"
@@ -15,7 +22,7 @@ export default function HeaderTicker() {
           textShadow: '0 2px 4px rgba(0, 0, 0, 0.25)',
         }}
       >
-        $Logen token launch coming soon. Contract address will appear here.
+        {settings.tokenAnnouncement}
       </p>
     </div>
   )

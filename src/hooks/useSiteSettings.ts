@@ -4,6 +4,7 @@ import { siteSettings as defaultSettings } from '../config/siteSettings'
 export interface SiteSettings {
   xUrl: string
   tickerText: string
+  tokenAnnouncement: string
 }
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
@@ -42,6 +43,7 @@ export function useSiteSettings() {
         }
       } catch (err) {
         console.warn('Failed to fetch settings from server, using defaults')
+        // Fallback to localStorage only if server fails
         const stored = localStorage.getItem('logen_site_settings')
         if (stored) {
           try {

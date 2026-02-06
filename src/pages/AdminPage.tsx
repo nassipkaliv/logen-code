@@ -84,12 +84,8 @@ export default function AdminPage() {
     
     try {
       await updateSettings(formData)
-      localStorage.setItem('logen_site_settings', JSON.stringify(formData))
-      
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)
-      
-      localStorage.removeItem('site_settings_cache')
     } catch (error) {
       console.error('Save error:', error)
     } finally {
@@ -188,6 +184,13 @@ export default function AdminPage() {
               placeholder="Your custom message..."
             />
 
+            <AdminInput
+              label="Token Announcement (Homepage Hero):"
+              value={formData.tokenAnnouncement}
+              onChange={(v) => setFormData({ ...formData, tokenAnnouncement: v })}
+              placeholder="$Logen token launch coming soon..."
+            />
+
             <div className="flex gap-3 mt-6">
               <SaveButton onClick={handleSave} saving={saving} />
               <button
@@ -231,6 +234,11 @@ export default function AdminPage() {
                 <span className="text-xs text-[rgba(235,234,250,0.5)]">Ticker Text:</span>
                 <div className="text-sm text-white">{formData.tickerText || 'Not set'}</div>
               </div>
+
+              <div className="p-3 bg-[rgba(132,141,232,0.1)] rounded border border-[rgba(132,141,232,0.2)]">
+                <span className="text-xs text-[rgba(235,234,250,0.5)]">Token Announcement:</span>
+                <div className="text-sm text-[#5fffd7]">{formData.tokenAnnouncement || 'Not set'}</div>
+              </div>
             </div>
           </div>
         </div>
@@ -268,6 +276,10 @@ export default function AdminPage() {
               <div>
                 <span className="text-xs text-[rgba(235,234,250,0.5)]">Ticker Bar Text:</span>
                 <div className="text-sm text-white">{settings.tickerText}</div>
+              </div>
+              <div>
+                <span className="text-xs text-[rgba(235,234,250,0.5)]">Token Announcement:</span>
+                <div className="text-sm text-[#5fffd7]">{settings.tokenAnnouncement}</div>
               </div>
             </div>
           </div>

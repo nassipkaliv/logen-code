@@ -7,4 +7,8 @@ export const siteSettings = {
   
   // Text displayed in ticker bar
   tickerText: 'Trade smarter, not harder — Logen automates your crypto strategy',
+
+  // Token announcement text (shown on homepage header ticker)
+  // Leave empty to hide the announcement
+  tokenAnnouncement: '$Logen token launch coming soon. Contract address will appear here.',
 }
