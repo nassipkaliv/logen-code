@@ -62,21 +62,57 @@ export default function FAQSection() {
   }
 
   return (
-    <section id="faq" className="relative pt-16 md:pt-24 overflow-hidden">
-      {/* Section labels - 1310px container */}
-      <div className="max-w-[1310px] mx-auto px-4 relative mb-0">
-        <div className="absolute -top-4 left-0 hidden sm:block">
-          <div className="relative px-3 py-2">
-            <span className="font-mono text-[10px] font-medium leading-[160%] uppercase text-[rgba(237,237,248,0.16)]">
-              [<span className='text-white'>07</span> / 07]
-            </span>
-          </div>
-        </div>
-        <div className="absolute -top-4 right-0 hidden sm:block">
-          <div className="relative px-2 py-2">
-            <span className="font-mono text-[10px] font-medium leading-[160%] uppercase text-[rgba(237,237,248,0.16)]">
-              [<span className='text-white'>FAQ</span>]
-            </span>
+    <section id="faq" className="relative">
+      {/* Section labels row with horizontal lines */}
+      <div className="relative max-w-[1310px] mx-auto">
+        <div className="absolute top-0 left-0 right-0 hidden sm:block z-[60]">
+          {/* Top horizontal line - full width */}
+          <div className="absolute top-0 -left-[100vw] -right-[100vw] h-[1px] bg-[rgba(235,234,250,0.08)]" />
+          {/* Bottom horizontal line - full width */}
+          <div className="absolute bottom-0 -left-[100vw] -right-[100vw] h-[1px] bg-[rgba(235,234,250,0.08)]" />
+
+          <div className="flex justify-between">
+            {/* Left label - 07 / 07 */}
+            <div className="relative">
+              {/* Right border */}
+              <div className="absolute right-0 top-0 bottom-0 w-[1px] bg-[rgba(235,234,250,0.08)]" />
+              {/* Bottom-left corner */}
+              <svg className="absolute bottom-0 left-0" width="11" height="6" viewBox="0 0 11 6" fill="none">
+                <rect x="6" y="6" width="1" height="6" transform="rotate(180 6 6)" fill="#FFF" />
+                <path d="M11 6L0 6L0 5L11 5L11 6Z" fill="#FFF" />
+              </svg>
+              {/* Top-right corner */}
+              <svg className="absolute top-0 right-0 rotate-180" width="11" height="6" viewBox="0 0 11 6" fill="none">
+                <rect x="6" y="6" width="1" height="6" transform="rotate(180 6 6)" fill="#FFF" />
+                <path d="M11 6L0 6L0 5L11 5L11 6Z" fill="#FFF" />
+              </svg>
+              <div className="px-[8px] py-[4px]">
+                <span className="font-mono text-[10px] font-medium leading-[160%] uppercase text-[rgba(237,237,248,0.16)]">
+                  [<span className='text-[#ededf8]'>07</span> / 07]
+                </span>
+              </div>
+            </div>
+
+            {/* Right label - FAQ */}
+            <div className="relative">
+              {/* Left border */}
+              <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-[rgba(235,234,250,0.08)]" />
+              {/* Bottom-left corner */}
+              <svg className="absolute bottom-0 left-0" width="11" height="6" viewBox="0 0 11 6" fill="none">
+                <rect x="6" y="6" width="1" height="6" transform="rotate(180 6 6)" fill="#FFF" />
+                <path d="M11 6L0 6L0 5L11 5L11 6Z" fill="#FFF" />
+              </svg>
+              {/* Top-right corner */}
+              <svg className="absolute top-0 right-0 rotate-180" width="11" height="6" viewBox="0 0 11 6" fill="none">
+                <rect x="6" y="6" width="1" height="6" transform="rotate(180 6 6)" fill="#FFF" />
+                <path d="M11 6L0 6L0 5L11 5L11 6Z" fill="#FFF" />
+              </svg>
+              <div className="px-[8px] py-[4px]">
+                <span className="font-mono text-[10px] font-medium leading-[160%] uppercase text-[rgba(237,237,248,0.16)]">
+                  [<span className='text-[#ededf8]'>FAQ</span>]
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -88,19 +124,8 @@ export default function FAQSection() {
         {/* Bottom horizontal line - full width */}
         <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-[rgba(235,234,250,0.08)]" />
 
-        {/* 1310px container for vertical lines and corners */}
+        {/* 1310px container for corners */}
         <div className="max-w-[1310px] mx-auto px-4 relative">
-          {/* Left vertical line */}
-          <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-[rgba(235,234,250,0.08)]" />
-          {/* Right vertical line */}
-          <div className="absolute right-0 top-0 bottom-0 w-[1px] bg-[rgba(235,234,250,0.08)]" />
-
-          {/* Plus corners at top */}
-          <PlusCorner className="z-10 -top-[5px] -left-[5px]" />
-          <PlusCorner className="z-10 -top-[5px] -right-[5px]" />
-          {/* Plus corners at bottom */}
-          <PlusCorner className="z-11 -bottom-[5px] -left-[5px]" />
-          <PlusCorner className="z-11 -bottom-[5px] -right-[5px]" />
 
           {/* Content wrapper for height */}
           <div className="relative flex justify-center px-4 sm:px-0">

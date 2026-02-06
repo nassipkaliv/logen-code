@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import HeaderLaunchButton from './HeaderLaunchButton'
 import { useSiteSettings } from '../../hooks/useSiteSettings'
@@ -50,48 +49,25 @@ const navItems = [
 ]
 
 export default function Header() {
-  const [isScrolled, setIsScrolled] = useState(false)
   const { settings } = useSiteSettings()
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
   return (
-    <>
-      {/* Placeholder to prevent content jump when header becomes fixed */}
-      <div className={`${isScrolled ? 'h-11 md:h-14 lg:h-16' : 'h-0'} transition-all duration-300`} />
+    <div className="relative z-50 pt-[24px]">
+      {/* Top horizontal line - full width */}
+      <div className="absolute top-[24px] left-0 right-0 h-[1px] bg-[rgba(235,234,250,0.08)]" />
+      {/* Bottom horizontal line - full width */}
+      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-[rgba(235,234,250,0.08)]" />
 
+      {/* Glow effect under header */}
       <div
-        className={`left-0 right-0 z-50 transition-all duration-300 ease-out overflow-hidden ${
-          isScrolled
-            ? 'fixed top-2 sm:top-3 md:top-4 px-2 sm:px-3 md:px-6 lg:px-8'
-            : 'relative top-0 px-0'
-        }`}
-      >
-        {/* Glow effect under header when scrolled */}
-        <div
-          className={`absolute left-1/2 top-full w-[300px] md:w-[600px] h-[150px] md:h-[300px] pointer-events-none transition-opacity duration-300 ${
-            isScrolled ? 'opacity-100' : 'opacity-0'
-          }`}
-          style={{
-            background: 'radial-gradient(50% 50% at 50% 50%, rgba(132, 141, 232, 0.06) 0%, rgba(132, 141, 232, 0) 85%)',
-            transform: 'translateX(-50%) rotate(180deg)',
-          }}
-        />
-        <header
-          className={`mx-auto transition-all duration-300 ease-out overflow-hidden ${
-            isScrolled
-              ? 'max-w-[1310px] rounded-lg md:rounded-2xl header-scrolled'
-              : 'max-w-full rounded-none header-static'
-          }`}
-        >
-          <div className="flex items-center justify-between h-11 md:h-14 lg:h-16 px-2 sm:px-3 md:px-6 max-w-[1310px] mx-auto">
+        className="absolute left-1/2 top-full w-[300px] md:w-[600px] h-[150px] md:h-[300px] pointer-events-none"
+        style={{
+          background: 'radial-gradient(50% 50% at 50% 50%, rgba(132, 141, 232, 0.06) 0%, rgba(132, 141, 232, 0) 85%)',
+          transform: 'translateX(-50%) rotate(180deg)',
+        }}
+      />
+      <header className="mx-auto max-w-[1310px] px-2 sm:px-3 md:px-6 lg:px-8 header-scrolled">
+        <div className="flex items-center justify-between h-11 md:h-14 lg:h-16 px-2 sm:px-3 md:px-6">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-1.5 sm:gap-2 md:gap-[10px] shrink-0">
             <img src="/assets/img/logo.png" alt="logo" className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
@@ -129,6 +105,5 @@ export default function Header() {
         </div>
       </header>
     </div>
-    </>
   )
 }

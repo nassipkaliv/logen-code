@@ -1,4 +1,3 @@
-import DecoratedContainer from '../ui/DecoratedContainer'
 import { StaggerContainer, StaggerItem } from '../ui/ScrollAnimations'
 
 function CardCorner({ className }: { className?: string }) {
@@ -37,41 +36,63 @@ const useCases = [
 
 export default function VisualUseCasesSection() {
   return (
-    <section id="use-cases" className="relative pt-16 md:pt-24 overflow-hidden">
-      <DecoratedContainer id="use-cases" className="min-h-[400px] md:min-h-[500px] pt-[20px] md:pt-[25px] pb-10 md:pb-16 px-4">
-        {/* Section labels */}
-        <div className="absolute -top-4 left-0 md:-left-4 hidden sm:block">
-          <div className="relative px-3 py-2">
-            <svg className="absolute -bottom-1 -left-1" width="11" height="6" viewBox="0 0 11 6" fill="none">
-              <rect x="6" y="6" width="1" height="6" transform="rotate(180 6 6)" fill="#FFF" />
-              <path d="M11 6L0 6L0 5L11 5L11 6Z" fill="#FFF" />
-            </svg>
-            <svg className="absolute -top-1 -right-1 rotate-180" width="11" height="6" viewBox="0 0 11 6" fill="none">
-              <rect x="6" y="6" width="1" height="6" transform="rotate(180 6 6)" fill="#FFF" />
-              <path d="M11 6L0 6L0 5L11 5L11 6Z" fill="#FFF" />
-            </svg>
-            <span className="font-mono text-[10px] font-medium leading-[160%] uppercase text-[rgba(237,237,248,0.16)]">
-              [<span className='text-white'>04</span> / 07]
-            </span>
-          </div>
-        </div>
-        <div className="absolute -top-4 right-0 md:-right-4 hidden sm:block">
-          <div className="relative px-2 py-2">
-            <svg className="absolute bottom-0 left-0" width="11" height="6" viewBox="0 0 11 6" fill="none">
-              <rect x="6" y="6" width="1" height="6" transform="rotate(180 6 6)" fill="#FFF" />
-              <path d="M11 6L0 6L0 5L11 5L11 6Z" fill="#FFF" />
-            </svg>
-            <svg className="absolute top-0 right-0 rotate-180" width="11" height="6" viewBox="0 0 11 6" fill="none">
-              <rect x="6" y="6" width="1" height="6" transform="rotate(180 6 6)" fill="#FFF" />
-              <path d="M11 6L0 6L0 5L11 5L11 6Z" fill="#FFF" />
-            </svg>
-            <span className="font-mono text-[10px] font-medium leading-[160%] uppercase text-[rgba(237,237,248,0.16)]">
-              [<span className='text-white'>Visual Use Cases</span>]
-            </span>
+    <section id="use-cases" className="relative">
+      <div className="relative max-w-[1310px] mx-auto">
+        {/* Section labels row with horizontal lines */}
+        <div className="absolute top-0 left-0 right-0 hidden sm:block z-[60]">
+          {/* Top horizontal line - full width */}
+          <div className="absolute top-0 -left-[100vw] -right-[100vw] h-[1px] bg-[rgba(235,234,250,0.08)]" />
+          {/* Bottom horizontal line - full width */}
+          <div className="absolute bottom-0 -left-[100vw] -right-[100vw] h-[1px] bg-[rgba(235,234,250,0.08)]" />
+
+          <div className="flex justify-between">
+            {/* Left label - 04 / 07 */}
+            <div className="relative">
+              {/* Right border */}
+              <div className="absolute right-0 top-0 bottom-0 w-[1px] bg-[rgba(235,234,250,0.08)]" />
+              {/* Bottom-left corner */}
+              <svg className="absolute bottom-0 left-0" width="11" height="6" viewBox="0 0 11 6" fill="none">
+                <rect x="6" y="6" width="1" height="6" transform="rotate(180 6 6)" fill="#FFF" />
+                <path d="M11 6L0 6L0 5L11 5L11 6Z" fill="#FFF" />
+              </svg>
+              {/* Top-right corner */}
+              <svg className="absolute top-0 right-0 rotate-180" width="11" height="6" viewBox="0 0 11 6" fill="none">
+                <rect x="6" y="6" width="1" height="6" transform="rotate(180 6 6)" fill="#FFF" />
+                <path d="M11 6L0 6L0 5L11 5L11 6Z" fill="#FFF" />
+              </svg>
+              <div className="px-[8px] py-[4px]">
+                <span className="font-mono text-[10px] font-medium leading-[160%] uppercase text-[rgba(237,237,248,0.16)]">
+                  [<span className='text-[#ededf8]'>04</span> / 07]
+                </span>
+              </div>
+            </div>
+
+            {/* Right label - USE CASES */}
+            <div className="relative">
+              {/* Left border */}
+              <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-[rgba(235,234,250,0.08)]" />
+              {/* Bottom-left corner */}
+              <svg className="absolute bottom-0 left-0" width="11" height="6" viewBox="0 0 11 6" fill="none">
+                <rect x="6" y="6" width="1" height="6" transform="rotate(180 6 6)" fill="#FFF" />
+                <path d="M11 6L0 6L0 5L11 5L11 6Z" fill="#FFF" />
+              </svg>
+              {/* Top-right corner */}
+              <svg className="absolute top-0 right-0 rotate-180" width="11" height="6" viewBox="0 0 11 6" fill="none">
+                <rect x="6" y="6" width="1" height="6" transform="rotate(180 6 6)" fill="#FFF" />
+                <path d="M11 6L0 6L0 5L11 5L11 6Z" fill="#FFF" />
+              </svg>
+              <div className="px-[8px] py-[4px]">
+                <span className="font-mono text-[10px] font-medium leading-[160%] uppercase text-[rgba(237,237,248,0.16)]">
+                  [<span className='text-[#ededf8]'>USE CASES</span>]
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Use cases grid - 2x2, no row gap, 20px column gap */}
+        {/* Content */}
+        <div className="relative pt-[30px] md:pt-[30px] pb-10 md:pb-16 px-4">
+          {/* Use cases grid - 2x2, no row gap, 20px column gap */}
         <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 md:gap-x-5 gap-y-4 md:gap-y-0">
           {useCases.map((useCase, index) => (
             <StaggerItem key={index}>
@@ -123,7 +144,10 @@ export default function VisualUseCasesSection() {
             </StaggerItem>
           ))}
         </StaggerContainer>
-      </DecoratedContainer>
+          {/* Bottom border - full page width */}
+          <div className="absolute bottom-0 -left-[100vw] -right-[100vw] h-[1px] bg-[rgba(235,234,250,0.08)]" />
+        </div>
+      </div>
     </section>
   )
 }

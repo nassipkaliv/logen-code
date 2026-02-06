@@ -19,12 +19,76 @@ function RedCorner({ className }: { className?: string }) {
 
 export default function SpeedGapSection() {
   return (
-    <section id="speed-gap" className="relative overflow-hidden">
-      <DecoratedContainer id="speed-gap" className="min-h-[200px] md:min-h-[250px] pt-8 md:pt-12 px-4 md:px-8">
-        <AnimatedSection variants={fadeInUp} className="flex flex-col items-start max-w-[95%] sm:max-w-[550px] mx-auto">
-          {/* Problem badge with red corners */}
+    <section id="speed-gap" className="relative mt-[70px] mb-[70px]">
+      {/* Top border - full page width */}
+      <div className="absolute top-0 -left-[100vw] -right-[100vw] h-[1px] bg-[rgba(235,234,250,0.08)]" />
+      {/* Bottom border - full page width */}
+      <div className="absolute bottom-0 -left-[100vw] -right-[100vw] h-[1px] bg-[rgba(235,234,250,0.08)]" />
+
+      {/* Corner decorations at container edges */}
+      <div className="absolute inset-0 max-w-[1310px] mx-auto pointer-events-none hidden sm:block">
+        {/* Top-left corner */}
+        <svg className="absolute -top-[3px] -left-[5px]" width="11" height="6" viewBox="0 0 11 6" fill="none">
+          <rect x="5" width="1" height="6" fill="white" />
+          <rect width="11" height="1" fill="white" />
+        </svg>
+        {/* Top-left +100px */}
+        <svg className="absolute -top-[3px] left-[290px]" width="11" height="6" viewBox="0 0 11 6" fill="none">
+          <rect x="5" width="1" height="6" fill="white" />
+          <rect width="11" height="1" fill="white" />
+        </svg>
+        {/* Top-right corner */}
+        <svg className="absolute -top-[3px] -right-[5px]" width="11" height="6" viewBox="0 0 11 6" fill="none">
+          <rect x="5" width="1" height="6" fill="white" />
+          <rect width="11" height="1" fill="white" />
+        </svg>
+        {/* Top-right -100px */}
+        <svg className="absolute -top-[3px] right-[290px]" width="11" height="6" viewBox="0 0 11 6" fill="none">
+          <rect x="5" width="1" height="6" fill="white" />
+          <rect width="11" height="1" fill="white" />
+        </svg>
+        {/* Bottom-left corner */}
+        <svg className="absolute -bottom-[3px] -left-[5px] rotate-180" width="11" height="6" viewBox="0 0 11 6" fill="none">
+          <rect x="5" width="1" height="6" fill="white" />
+          <rect width="11" height="1" fill="white" />
+        </svg>
+        {/* Bottom-right corner */}
+        <svg className="absolute -bottom-[3px] -right-[5px] rotate-180" width="11" height="6" viewBox="0 0 11 6" fill="none">
+          <rect x="5" width="1" height="6" fill="white" />
+          <rect width="11" height="1" fill="white" />
+        </svg>
+      </div>
+
+
+      <DecoratedContainer id="speed-gap" className="min-h-[200px] md:min-h-[250px] py-[90px]">
+        {/* Horizontal lines - full container width */}
+        <div className="absolute top-[90px] left-0 w-full h-[1px] bg-[rgba(235,234,250,0.08)]" />
+        <div className="absolute bottom-[90px] left-0 w-full h-[1px] bg-[rgba(235,234,250,0.08)]" />
+
+        {/* Vertical lines container - matches AnimatedSection width */}
+        <div className="absolute inset-0 max-w-[95%] sm:max-w-[550px] mx-auto pointer-events-none">
+          <div className="absolute left-0 top-0 h-full w-[1px] bg-[rgba(235,234,250,0.08)]" />
+          <div className="absolute right-0 top-0 h-full w-[1px] bg-[rgba(235,234,250,0.08)]" />
+          {/* Bottom-left corner */}
+          <svg className="absolute -bottom-[5px] -left-[5px]" width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="5" width="1" height="11" fill="#EDEDFA" />
+            <rect y="5" width="11" height="1" fill="#EDEDFA" />
+          </svg>
+          {/* Bottom-right corner */}
+          <svg className="absolute -bottom-[5px] -right-[5px]" width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="5" width="1" height="11" fill="#EDEDFA" />
+            <rect y="5" width="11" height="1" fill="#EDEDFA" />
+          </svg>
+        </div>
+          
+
+        <AnimatedSection variants={fadeInUp} className="relative flex flex-col items-start max-w-[95%] sm:max-w-[550px] mx-auto">
+          {/* Vertical lines - left and right of 550px container */}
+          <div className="relative">            
+            {/* Problem badge with red corners */}
+        
           <div
-            className="relative mb-4"
+            className="relative mb-4 w-fit"
             style={{
               border: '1px solid rgba(199, 52, 52, 0.12)',
               background: 'rgba(199, 52, 52, 0.02)',
@@ -74,17 +138,7 @@ export default function SpeedGapSection() {
           </div>
 
           {/* Main content with corners */}
-          <div className="relative pb-10 md:pb-16">
-            {/* Bottom-left corner */}
-            <svg className="absolute -bottom-[1px] -left-[1px]" width="11" height="6" viewBox="0 0 11 6" fill="none">
-              <rect x="6" y="6" width="1" height="6" transform="rotate(180 6 6)" fill="white" />
-              <path d="M11 6L0 6L0 5L11 5L11 6Z" fill="white" />
-            </svg>
-            {/* Bottom-right corner */}
-            <svg className="absolute -bottom-[1px] -right-[1px]" width="11" height="6" viewBox="0 0 11 6" fill="none">
-              <rect x="6" y="6" width="1" height="6" transform="rotate(180 6 6)" fill="white" />
-              <path d="M11 6L0 6L0 5L11 5L11 6Z" fill="white" />
-            </svg>
+          <div className="relative">
 
             <div className="space-y-0">
               <p className="font-primary text-[20px] sm:text-[24px] md:text-[30px] font-medium leading-[120%] text-[#ededf8]">
@@ -104,6 +158,7 @@ export default function SpeedGapSection() {
                 <span className="font-mono text-[rgba(237,237,248,0.6)]">.</span>
               </p>
             </div>
+          </div>
           </div>
         </AnimatedSection>
       </DecoratedContainer>

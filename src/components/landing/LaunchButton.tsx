@@ -37,11 +37,7 @@ export default function LaunchButton() {
   }, [isAuthenticated, loginWithWallet, navigate])
 
   return (
-    <div className="relative py-4 md:py-6 px-8 md:px-12">
-      <BlockCorner className="top-0 left-0" />
-      <BlockCorner className="top-0 right-0 rotate-90" />
-      <BlockCorner className="bottom-0 right-0 rotate-180" />
-      <BlockCorner className="bottom-0 left-0 -rotate-90" />
+    <div className="relative py-2">
       <button
         onClick={handleClick}
         className="relative px-6 py-3 font-primary text-sm font-medium text-[#ebedff] border border-[rgba(215,218,255,0.12)] rounded-sm hover:bg-[rgba(132,141,232,0.08)] transition-all"

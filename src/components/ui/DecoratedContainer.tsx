@@ -59,32 +59,11 @@ interface DecoratedContainerProps {
 export default function DecoratedContainer({
   children,
   className = '',
-  id = 'section',
-  showDots = true,
-  showCorners = true,
 }: DecoratedContainerProps) {
   return (
     <div
       className={`relative max-w-[1310px] mx-auto ${className}`}
-      style={{
-        borderLeft: '1px solid rgba(235, 234, 250, 0.08)',
-        borderRight: '1px solid rgba(235, 234, 250, 0.08)',
-      }}
     >
-      {showDots && (
-        <div className="hidden md:block">
-          <BorderDots position="left" id={id} />
-          <BorderDots position="right" id={id} />
-        </div>
-      )}
-      {showCorners && (
-        <>
-          <SectionCorner position="top-left" />
-          <SectionCorner position="top-right" />
-          <SectionCorner position="bottom-left" />
-          <SectionCorner position="bottom-right" />
-        </>
-      )}
       {children}
     </div>
   )

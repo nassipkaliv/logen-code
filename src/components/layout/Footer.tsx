@@ -17,21 +17,6 @@ function Corner({ className }: { className?: string }) {
   )
 }
 
-// Plus sign corner for grid intersections
-function PlusCorner({ className }: { className?: string }) {
-  return (
-    <svg
-      width="11"
-      height="11"
-      viewBox="0 0 11 11"
-      fill="none"
-      className={`absolute ${className || ''}`}
-    >
-      <rect x="5" width="1" height="11" fill="#EDEDFA" />
-      <rect y="5" width="11" height="1" fill="#EDEDFA" />
-    </svg>
-  )
-}
 
 // Button with corner decorations
 function FooterButton({
@@ -92,17 +77,9 @@ export default function Footer() {
       {/* Bottom horizontal line - full width */}
       <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-[rgba(235,234,250,0.08)]" />
 
-      {/* Grid container with vertical lines */}
+      {/* Grid container */}
       <div className="relative w-full">
         <div className="max-w-[1310px] mx-auto relative px-2 sm:px-0">
-          {/* Left vertical line */}
-          <div className="absolute left-0 sm:left-2 md:left-0 top-0 bottom-0 w-[1px] bg-[rgba(235,234,250,0.08)]" />
-          {/* Right vertical line */}
-          <div className="absolute right-0 sm:right-2 md:right-0 top-0 bottom-0 w-[1px] bg-[rgba(235,234,250,0.08)]" />
-
-          {/* Plus corners at top - hidden on small mobile */}
-          <PlusCorner className="hidden sm:block z-10 -top-[5px] -left-[5px]" />
-          <PlusCorner className="hidden sm:block z-10 -top-[5px] -right-[5px]" />
           {/* Footer content */}
           <div
             className="px-2 sm:px-3 md:px-[18px] overflow-hidden"

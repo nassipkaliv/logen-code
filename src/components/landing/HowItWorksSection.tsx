@@ -1,4 +1,3 @@
-import DecoratedContainer from '../ui/DecoratedContainer'
 import { StaggerContainer, StaggerItem } from '../ui/ScrollAnimations'
 
 function CardCorner({ className }: { className?: string }) {
@@ -41,41 +40,63 @@ const steps = [
 
 export default function HowItWorksSection() {
   return (
-    <section id="how-it-works" className="relative pt-16 md:pt-24 overflow-hidden">
-      <DecoratedContainer id="how-it-works" className="min-h-[400px] md:min-h-[500px] pt-[50px] md:pt-[70px] pb-10 md:pb-16 px-4">
-        {/* Section labels */}
-        <div className="absolute -top-4 left-0 md:-left-4 hidden sm:block">
-          <div className="relative px-3 py-2">
-            <svg className="absolute -bottom-1 -left-1" width="11" height="6" viewBox="0 0 11 6" fill="none">
-              <rect x="6" y="6" width="1" height="6" transform="rotate(180 6 6)" fill="#FFF" />
-              <path d="M11 6L0 6L0 5L11 5L11 6Z" fill="#FFF" />
-            </svg>
-            <svg className="absolute -top-1 -right-1 rotate-180" width="11" height="6" viewBox="0 0 11 6" fill="none">
-              <rect x="6" y="6" width="1" height="6" transform="rotate(180 6 6)" fill="#FFF" />
-              <path d="M11 6L0 6L0 5L11 5L11 6Z" fill="#FFF" />
-            </svg>
-            <span className="font-mono text-[10px] font-medium leading-[160%] uppercase text-[rgba(237,237,248,0.16)]">
-              [<span className='text-white'>03</span> / 07]
-            </span>
-          </div>
-        </div>
-        <div className="absolute -top-4 right-0 md:-right-4 hidden sm:block">
-          <div className="relative px-2 py-2">
-            <svg className="absolute bottom-0 left-0" width="11" height="6" viewBox="0 0 11 6" fill="none">
-              <rect x="6" y="6" width="1" height="6" transform="rotate(180 6 6)" fill="#FFF" />
-              <path d="M11 6L0 6L0 5L11 5L11 6Z" fill="#FFF" />
-            </svg>
-            <svg className="absolute top-0 right-0 rotate-180" width="11" height="6" viewBox="0 0 11 6" fill="none">
-              <rect x="6" y="6" width="1" height="6" transform="rotate(180 6 6)" fill="#FFF" />
-              <path d="M11 6L0 6L0 5L11 5L11 6Z" fill="#FFF" />
-            </svg>
-            <span className="font-mono text-[10px] font-medium leading-[160%] uppercase text-[rgba(237,237,248,0.16)]">
-              [<span className='text-white'>How It Works</span>]
-            </span>
+    <section id="how-it-works" className="relative">
+      <div className="relative max-w-[1310px] mx-auto">
+        {/* Section labels row with horizontal lines */}
+        <div className="absolute top-0 left-0 right-0 hidden sm:block z-[60]">
+          {/* Top horizontal line - full width */}
+          <div className="absolute top-0 -left-[100vw] -right-[100vw] h-[1px] bg-[rgba(235,234,250,0.08)]" />
+          {/* Bottom horizontal line - full width */}
+          <div className="absolute bottom-0 -left-[100vw] -right-[100vw] h-[1px] bg-[rgba(235,234,250,0.08)]" />
+
+          <div className="flex justify-between">
+            {/* Left label - 03 / 07 */}
+            <div className="relative">
+              {/* Right border */}
+              <div className="absolute right-0 top-0 bottom-0 w-[1px] bg-[rgba(235,234,250,0.08)]" />
+              {/* Bottom-left corner */}
+              <svg className="absolute bottom-0 left-0" width="11" height="6" viewBox="0 0 11 6" fill="none">
+                <rect x="6" y="6" width="1" height="6" transform="rotate(180 6 6)" fill="#FFF" />
+                <path d="M11 6L0 6L0 5L11 5L11 6Z" fill="#FFF" />
+              </svg>
+              {/* Top-right corner */}
+              <svg className="absolute top-0 right-0 rotate-180" width="11" height="6" viewBox="0 0 11 6" fill="none">
+                <rect x="6" y="6" width="1" height="6" transform="rotate(180 6 6)" fill="#FFF" />
+                <path d="M11 6L0 6L0 5L11 5L11 6Z" fill="#FFF" />
+              </svg>
+              <div className="px-[8px] py-[4px]">
+                <span className="font-mono text-[10px] font-medium leading-[160%] uppercase text-[rgba(237,237,248,0.16)]">
+                  [<span className='text-[#ededf8]'>03</span> / 07]
+                </span>
+              </div>
+            </div>
+
+            {/* Right label - HOW IT WORKS */}
+            <div className="relative">
+              {/* Left border */}
+              <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-[rgba(235,234,250,0.08)]" />
+              {/* Bottom-left corner */}
+              <svg className="absolute bottom-0 left-0" width="11" height="6" viewBox="0 0 11 6" fill="none">
+                <rect x="6" y="6" width="1" height="6" transform="rotate(180 6 6)" fill="#FFF" />
+                <path d="M11 6L0 6L0 5L11 5L11 6Z" fill="#FFF" />
+              </svg>
+              {/* Top-right corner */}
+              <svg className="absolute top-0 right-0 rotate-180" width="11" height="6" viewBox="0 0 11 6" fill="none">
+                <rect x="6" y="6" width="1" height="6" transform="rotate(180 6 6)" fill="#FFF" />
+                <path d="M11 6L0 6L0 5L11 5L11 6Z" fill="#FFF" />
+              </svg>
+              <div className="px-[8px] py-[4px]">
+                <span className="font-mono text-[10px] font-medium leading-[160%] uppercase text-[rgba(237,237,248,0.16)]">
+                  [<span className='text-[#ededf8]'>HOW IT WORKS</span>]
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Steps grid - 2x2 with divider */}
+        {/* Content */}
+        <div className="relative pt-[30px] md:pt-[30px] pb-10 md:pb-16 px-4">
+          {/* Steps grid - 2x2 with divider */}
         <StaggerContainer className="relative grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
           {/* Center divider */}
           <div className="hidden md:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none">
@@ -88,13 +109,17 @@ export default function HowItWorksSection() {
           {steps.map((step) => (
             <StaggerItem key={step.number}>
               <div
-                className="relative overflow-hidden min-h-[220px] sm:min-h-[250px] md:min-h-[280px] p-5 md:p-[30px]"
+                className="relative min-h-[220px] sm:min-h-[250px] md:min-h-[280px] p-5 md:p-[30px] flex flex-col"
                 style={{
                   borderLeft: '1px solid rgba(235, 234, 250, 0.08)',
                   borderRight: '1px solid rgba(235, 234, 250, 0.08)',
                   background: 'linear-gradient(180deg, rgba(237, 237, 248, 0) 0%, rgba(237, 237, 248, 0.02) 100%)',
                 }}
               >
+              {/* Top horizontal line - full page width */}
+              <div className="absolute top-0 -left-[100vw] -right-[100vw] h-[1px] bg-[rgba(235,234,250,0.08)]" />
+              {/* Bottom horizontal line - full page width */}
+              <div className="absolute bottom-0 -left-[100vw] -right-[100vw] h-[1px] bg-[rgba(235,234,250,0.08)]" />
               {/* Card glow - top right */}
               <img
                 src="/assets/img/cardGlow.png"
@@ -109,7 +134,7 @@ export default function HowItWorksSection() {
               <CardCorner className="bottom-0 left-0 -rotate-90 z-10" />
 
               {/* Left side - number and title */}
-              <div className="relative z-10 h-full flex flex-col justify-between">
+              <div className="relative z-10 flex-1 flex flex-col justify-between">
                 {/* Step number badge */}
                 <div
                   className="relative w-[36px] h-[36px] flex items-center justify-center"
@@ -145,7 +170,10 @@ export default function HowItWorksSection() {
             </StaggerItem>
           ))}
         </StaggerContainer>
-      </DecoratedContainer>
+          {/* Bottom border - full page width */}
+          <div className="absolute bottom-0 -left-[100vw] -right-[100vw] h-[1px] bg-[rgba(235,234,250,0.08)]" />
+        </div>
+      </div>
     </section>
   )
 }
