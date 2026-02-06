@@ -2,22 +2,6 @@ import { usePrivyAuth } from '../../hooks/usePrivyAuth'
 import { useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-// Corner decoration component
-function BlockCorner({ className }: { className?: string }) {
-  return (
-    <svg
-      width="6"
-      height="6"
-      viewBox="0 0 6 6"
-      fill="none"
-      className={`absolute ${className}`}
-    >
-      <rect width="1" height="6" fill="#FFF" />
-      <rect width="6" height="1" fill="#FFF" />
-    </svg>
-  )
-}
-
 export default function LaunchButton() {
   const { loginWithWallet, isAuthenticated } = usePrivyAuth()
   const navigate = useNavigate()

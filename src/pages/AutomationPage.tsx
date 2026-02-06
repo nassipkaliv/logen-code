@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { DashboardLayout } from '../components/dashboard'
 import { Corner, PlusCorner } from '../components/ui'
 import { SelectField, ConditionInput, AutomationItem, CapacityBox } from '../components/automation'
@@ -69,7 +69,7 @@ const getStoredAsset = (source: string): string => {
 }
 
 export default function AutomationPage() {
-  const { user, token, isAuthenticated } = useAuth()
+  const { token, isAuthenticated } = useAuth()
   const [source, setSource] = useState(getStoredSource)
   const [asset, setAsset] = useState(() => getStoredAsset(getStoredSource()))
   const [selectedStrategies, setSelectedStrategies] = useState<string[]>(getStoredStrategies)
@@ -80,6 +80,7 @@ export default function AutomationPage() {
   const strategyRef = useRef<HTMLDivElement>(null)
 
   const isBalanceZero = solBalance === 0 && !isLoadingBalance && isAuthenticated
+  console.log('[DEBUG] isBalanceZero:', isBalanceZero, 'solBalance:', solBalance, 'isLoadingBalance:', isLoadingBalance, 'isAuthenticated:', isAuthenticated)
   const availableAssets = exchanges[source as keyof typeof exchanges] || []
 
   // Fetch SOL balance on mount
@@ -88,7 +89,9 @@ export default function AutomationPage() {
       if (token) {
         setIsLoadingBalance(true)
         try {
+          console.log('[DEBUG] Fetching balance with token:', token?.substring(0, 20) + '...')
           const data = await getBalance(token)
+          console.log('[DEBUG] Balance data received:', data)
           setSolBalance(data?.sol?.balance || 0)
         } catch (error) {
           console.error('Failed to fetch balance:', error)
