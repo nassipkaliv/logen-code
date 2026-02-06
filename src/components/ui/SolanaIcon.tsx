@@ -1,4 +1,7 @@
 export function SolanaIcon({ size = 24 }: { size?: number }) {
+  // size prop is reserved for future use when dynamic sizing is needed
+  void size;
+  
   return (
     <svg
       width="21"
