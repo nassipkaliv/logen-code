@@ -22,6 +22,7 @@ export function loadSettings() {
   try {
     if (fs.existsSync(SETTINGS_FILE)) {
       const data = fs.readFileSync(SETTINGS_FILE, 'utf-8');
+      // Saved settings take priority over defaults
       return { ...defaultSettings, ...JSON.parse(data) };
     }
   } catch (error) {

@@ -1,12 +1,12 @@
 import express from 'express';
-import { loadSettings, saveSettings, getDefaultSettings } from '../services/settings.js';
+import { loadSettings, saveSettings, getDefaultSettings } from '../models/SiteSettings.js';
 
 const router = express.Router();
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'o5I>Kf<qfT+OP5K?';
 
 router.get('/', async (req, res) => {
   try {
-    const settings = loadSettings();
+    const settings = await loadSettings();
     res.json(settings);
   } catch (error) {
     console.error('Error getting settings:', error.message);
@@ -22,7 +22,7 @@ router.post('/', async (req, res) => {
       return res.status(401).json({ error: 'Invalid password' });
     }
     
-    const updated = saveSettings(newSettings);
+    const updated = await saveSettings(newSettings);
     res.json(updated);
   } catch (error) {
     console.error('Error saving settings:', error.message);
@@ -39,7 +39,7 @@ router.delete('/', async (req, res) => {
     }
     
     const defaults = getDefaultSettings();
-    const updated = saveSettings(defaults);
+    const updated = await saveSettings(defaults);
     
     res.json(updated);
   } catch (error) {
