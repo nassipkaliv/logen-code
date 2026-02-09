@@ -102,7 +102,7 @@ export default function FeaturesSection() {
           {features.map((feature, index) => (
             <StaggerItem key={index}>
               <div
-                className="relative p-4 md:p-6 overflow-hidden min-h-[280px] sm:min-h-[320px] md:min-h-[350px]"
+                className="relative p-4 md:p-6 overflow-hidden min-h-[450px] sm:min-h-[320px] md:min-h-[350px]"
                 style={{
                   borderLeft: '1px solid rgba(235, 234, 250, 0.08)',
                   borderRight: '1px solid rgba(235, 234, 250, 0.08)',
