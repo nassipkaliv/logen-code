@@ -1,34 +1,18 @@
-import { useState, useEffect } from 'react'
-import { useSiteSettings, useAdminPassword } from '../hooks/useSiteSettings'
-import { DashboardLayout } from '../components/dashboard'
-import { PlusCorner } from '../components/ui'
+import { useState, useEffect } from 'react';
+import { useSiteSettings, useAdminPassword } from '../hooks/useSiteSettings';
+import { DashboardLayout } from '../components/dashboard';
+import { Corner, PlusCorner } from '../components/ui';
 
-
-function BlockCorner({ className }: { className?: string }) {
-  return (
-    <svg
-      width="6"
-      height="6"
-      viewBox="0 0 6 6"
-      fill="none"
-      className={`absolute ${className}`}
-    >
-      <rect width="1" height="6" fill="#848DE8" />
-      <rect width="6" height="1" fill="#848DE8" />
-    </svg>
-  )
-}
-
-function AdminInput({ 
-  label, 
-  value, 
+function AdminInput({
+  label,
+  value,
   onChange,
-  placeholder 
-}: { 
-  label: string
-  value: string
-  onChange: (v: string) => void
-  placeholder?: string
+  placeholder,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
 }) {
   return (
     <div className="mb-4">
@@ -43,10 +27,10 @@ function AdminInput({
         className="w-full px-3 py-2 font-primary text-sm text-white bg-[rgba(132,141,232,0.1)] border border-[rgba(132,141,232,0.3)] rounded focus:outline-none focus:border-[#848DE8] transition-colors"
       />
     </div>
-  )
+  );
 }
 
-function SaveButton({ onClick, saving }: { onClick: () => void, saving: boolean }) {
+function SaveButton({ onClick, saving }: { onClick: () => void; saving: boolean }) {
   return (
     <button
       onClick={onClick}
@@ -57,45 +41,45 @@ function SaveButton({ onClick, saving }: { onClick: () => void, saving: boolean 
         background: 'rgba(132, 141, 232, 0.15)',
       }}
     >
-      <BlockCorner className="top-0 left-0" />
-      <BlockCorner className="top-0 right-0 rotate-90" />
-      <BlockCorner className="bottom-0 right-0 rotate-180" />
-      <BlockCorner className="bottom-0 left-0 -rotate-90" />
+      <Corner className="top-0 left-0" />
+      <Corner className="top-0 right-0 rotate-90" />
+      <Corner className="bottom-0 right-0 rotate-180" />
+      <Corner className="bottom-0 left-0 -rotate-90" />
       {saving ? 'Saving...' : 'Save Changes'}
     </button>
-  )
+  );
 }
 
 export default function AdminPage() {
-  const { settings, updateSettings, defaultSettings } = useSiteSettings()
-  const { isAuthenticated, password, setPassword, login, logout } = useAdminPassword()
-  const [saving, setSaving] = useState(false)
-  const [saved, setSaved] = useState(false)
-
-  const [formData, setFormData] = useState(settings)
+  const { settings, updateSettings, defaultSettings } = useSiteSettings();
+  const { isAuthenticated, password, setPassword, login, logout } = useAdminPassword();
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [formData, setFormData] = useState(settings);
 
   useEffect(() => {
-    setFormData(settings)
-  }, [settings])
+    setFormData(settings);
+  }, [settings]);
 
   const handleSave = async () => {
-    setSaving(true)
-    localStorage.setItem('admin_password', password)
-    
+    setSaving(true);
+    setError(null);
+
     try {
-      await updateSettings(formData)
-      setSaved(true)
-      setTimeout(() => setSaved(false), 2000)
-    } catch (error) {
-      console.error('Save error:', error)
+      await updateSettings(formData, password);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save settings');
     } finally {
-      setSaving(false)
+      setSaving(false);
     }
-  }
+  };
 
   const handleReset = () => {
-    setFormData(defaultSettings)
-  }
+    setFormData(defaultSettings);
+  };
 
   if (!isAuthenticated) {
     return (
@@ -133,10 +117,9 @@ export default function AdminPage() {
           >
             Login
           </button>
-
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -206,6 +189,12 @@ export default function AdminPage() {
                 Settings saved successfully!
               </div>
             )}
+
+            {error && (
+              <div className="mt-4 p-2 bg-[rgba(255,88,122,0.1)] border border-[rgba(255,88,122,0.3)] rounded text-[#ff587a] text-sm text-center">
+                {error}
+              </div>
+            )}
           </div>
 
           <div
@@ -247,7 +236,7 @@ export default function AdminPage() {
           <h2 className="font-primary text-lg font-medium text-white mb-4">
             Current Site Values
           </h2>
-          
+
           <div
             className="relative p-4"
             style={{
@@ -264,9 +253,9 @@ export default function AdminPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <span className="text-xs text-[rgba(235,234,250,0.5)]">X URL (in Header & Footer):</span>
-                <a 
-                  href={settings.xUrl} 
-                  target="_blank" 
+                <a
+                  href={settings.xUrl}
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-[#848DE8] hover:underline break-all"
                 >
@@ -286,5 +275,5 @@ export default function AdminPage() {
         </div>
       </div>
     </DashboardLayout>
-  )
+  );
 }

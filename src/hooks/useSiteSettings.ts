@@ -1,86 +1,85 @@
-import { useState, useEffect } from 'react'
-import { siteSettings as defaultSettings } from '../config/siteSettings'
+import { useState, useEffect } from 'react';
+import { siteSettings as defaultSettings } from '../config/siteSettings';
+import { config } from '../config';
 
 export interface SiteSettings {
-  xUrl: string
-  tickerText: string
-  tokenAnnouncement: string
+  xUrl: string;
+  tickerText: string;
+  tokenAnnouncement: string;
 }
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
-
 export function useAdminPassword() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [password, setPassword] = useState('')
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
 
   const login = (inputPassword: string) => {
-    if (inputPassword === 'o5I>Kf<qfT+OP5K?') {
-      setIsAuthenticated(true)
-    } else {
-      alert('Invalid password')
+    if (!inputPassword) {
+      alert('Password is required');
+      return;
     }
-  }
+    setIsAuthenticated(true);
+    setPassword(inputPassword);
+  };
 
   const logout = () => {
-    setIsAuthenticated(false)
-    setPassword('')
-  }
+    setIsAuthenticated(false);
+    setPassword('');
+  };
 
-  return { isAuthenticated, password, setPassword, login, logout }
+  return { isAuthenticated, password, setPassword, login, logout };
 }
 
 export function useSiteSettings() {
-  const [settings, setSettings] = useState<SiteSettings>(defaultSettings)
-  const [loading, setLoading] = useState(true)
+  const [settings, setSettings] = useState<SiteSettings>(defaultSettings);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/settings`)
+        const response = await fetch(`${config.api.url}/settings`);
         if (response.ok) {
-          const data = await response.json()
-          setSettings(data)
+          const data = await response.json();
+          setSettings(data);
         }
-      } catch (err) {
-        console.warn('Failed to fetch settings from server, using defaults')
-        // Fallback to localStorage only if server fails
-        const stored = localStorage.getItem('logen_site_settings')
+      } catch {
+        const stored = localStorage.getItem('logen_site_settings');
         if (stored) {
           try {
-            setSettings(JSON.parse(stored))
-          } catch {}
+            setSettings(JSON.parse(stored));
+          } catch {
+            // Malformed cached data, use defaults
+          }
         }
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchSettings()
-  }, [])
+    fetchSettings();
+  }, []);
 
-  const updateSettings = async (newSettings: Partial<SiteSettings>) => {
+  const updateSettings = async (newSettings: Partial<SiteSettings>, password: string) => {
     try {
-      const password = localStorage.getItem('admin_password') || 'o5I>Kf<qfT+OP5K?'
-      const response = await fetch(`${API_URL}/api/settings`, {
+      const response = await fetch(`${config.api.url}/settings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...newSettings, password })
-      })
+        body: JSON.stringify({ ...newSettings, password }),
+      });
 
       if (response.ok) {
-        const data = await response.json()
-        setSettings(data)
+        const data = await response.json();
+        setSettings(data);
       } else {
-        const updated = { ...settings, ...newSettings }
-        setSettings(updated)
-        localStorage.setItem('logen_site_settings', JSON.stringify(updated))
+        const error = await response.json().catch(() => null);
+        throw new Error(error?.error || 'Failed to save settings');
       }
-    } catch {
-      const updated = { ...settings, ...newSettings }
-      setSettings(updated)
-      localStorage.setItem('logen_site_settings', JSON.stringify(updated))
+    } catch (err) {
+      const updated = { ...settings, ...newSettings };
+      setSettings(updated);
+      localStorage.setItem('logen_site_settings', JSON.stringify(updated));
+      throw err;
     }
-  }
+  };
 
-  return { settings, updateSettings, loading, defaultSettings }
+  return { settings, updateSettings, loading, defaultSettings };
 }

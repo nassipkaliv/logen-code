@@ -81,9 +81,7 @@ export default function TickerBar() {
 
         setCryptoData(formattedData);
         setLoading(false);
-      } catch (error) {
-        console.error('Error fetching crypto data:', error);
-
+      } catch {
         const cached = localStorage.getItem(CACHE_KEY);
         if (cached) {
           const { data } = JSON.parse(cached);

@@ -1,23 +1,6 @@
 import { motion } from 'framer-motion'
 import LaunchButton from './LaunchButton'
-
-
-
-// Inner block corner decoration (smaller, white)
-function BlockCorner({ className }: { className?: string }) {
-  return (
-    <svg
-      width="6"
-      height="6"
-      viewBox="0 0 6 6"
-      fill="none"
-      className={`absolute ${className}`}
-    >
-      <rect width="1" height="6" fill="#FFF" />
-      <rect width="6" height="1" fill="#FFF" />
-    </svg>
-  )
-}
+import { Corner } from '../ui'
 
 
 export default function HeroSection() {
@@ -142,10 +125,10 @@ export default function HeroSection() {
                 alt=""
                 className="absolute top-0 left-full ml-[-130px] w-auto h-full pointer-events-none z-0"
               />
-              <BlockCorner className="top-0 left-0 z-10" />
-              <BlockCorner className="top-0 right-0 rotate-90 z-10" />
-              <BlockCorner className="bottom-0 right-0 rotate-180 z-10" />
-              <BlockCorner className="bottom-0 left-0 -rotate-90 z-10" />
+              <Corner className="top-0 left-0 z-10" />
+              <Corner className="top-0 right-0 rotate-90 z-10" />
+              <Corner className="bottom-0 right-0 rotate-180 z-10" />
+              <Corner className="bottom-0 left-0 -rotate-90 z-10" />
               <img
                 src="/assets/img/Dashboard.png"
                 alt="Logen Dashboard"
@@ -167,10 +150,10 @@ export default function HeroSection() {
               {/* Vertical lines extending from this container to bottom of hero */}
               <div className="absolute left-0 top-0 w-[1px] h-[405px] bg-[rgba(235,234,250,0.08)] hidden sm:block" />
               <div className="absolute right-0 top-0 w-[1px] h-[405px] bg-[rgba(235,234,250,0.08)] hidden sm:block" />
-              <BlockCorner className="top-0 left-0" />
-              <BlockCorner className="top-0 right-0 rotate-90" />
-              <BlockCorner className="bottom-0 right-0 rotate-180" />
-              <BlockCorner className="bottom-0 left-0 -rotate-90" />
+              <Corner className="top-0 left-0" />
+              <Corner className="top-0 right-0 rotate-90" />
+              <Corner className="bottom-0 right-0 rotate-180" />
+              <Corner className="bottom-0 left-0 -rotate-90" />
               {/* Bottom horizontal line - full width */}
               <div className="absolute bottom-0 -left-[100vw] -right-[100vw] h-[1px] bg-[rgba(235,234,250,0.08)]" />
               <span
@@ -193,10 +176,10 @@ export default function HeroSection() {
               transition={{ duration: 0.6, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
               className="relative px-[30px] flex items-center justify-center border-l border-r border-b border-[rgba(235,234,250,0.08)]"
             >
-              <BlockCorner className="top-0 left-0" />
-              <BlockCorner className="top-0 right-0 rotate-90" />
-              <BlockCorner className="bottom-0 right-0 rotate-180" />
-              <BlockCorner className="bottom-0 left-0 -rotate-90" />
+              <Corner className="top-0 left-0" />
+              <Corner className="top-0 right-0 rotate-90" />
+              <Corner className="bottom-0 right-0 rotate-180" />
+              <Corner className="bottom-0 left-0 -rotate-90" />
               {/* Bottom horizontal line - full width */}
               <div className="absolute bottom-0 -left-[100vw] -right-[100vw] h-[1px] bg-[rgba(235,234,250,0.08)]" />
               <span
@@ -219,10 +202,10 @@ export default function HeroSection() {
               transition={{ duration: 0.6, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
               className="relative px-[35px] flex items-center justify-center border-l border-r border-b border-[rgba(235,234,250,0.08)]"
             >
-              <BlockCorner className="top-0 left-0" />
-              <BlockCorner className="top-0 right-0 rotate-90" />
-              <BlockCorner className="bottom-0 right-0 rotate-180" />
-              <BlockCorner className="bottom-0 left-0 -rotate-90" />
+              <Corner className="top-0 left-0" />
+              <Corner className="top-0 right-0 rotate-90" />
+              <Corner className="bottom-0 right-0 rotate-180" />
+              <Corner className="bottom-0 left-0 -rotate-90" />
               {/* Bottom horizontal line - full width */}
               <div className="absolute bottom-0 -left-[100vw] -right-[100vw] h-[1px] bg-[rgba(235,234,250,0.08)]" />
               <p className="font-primary text-[13px] md:text-[15px] font-normal tracking-[0.02em] text-center py-2 md:py-4">
@@ -238,10 +221,10 @@ export default function HeroSection() {
               transition={{ duration: 0.6, delay: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
               className="relative px-[50px] flex items-center justify-center border-l border-r border-b border-[rgba(235,234,250,0.08)]"
             >
-              <BlockCorner className="top-0 left-0" />
-              <BlockCorner className="top-0 right-0 rotate-90" />
-              <BlockCorner className="bottom-0 right-0 rotate-180" />
-              <BlockCorner className="bottom-0 left-0 -rotate-90" />
+              <Corner className="top-0 left-0" />
+              <Corner className="top-0 right-0 rotate-90" />
+              <Corner className="bottom-0 right-0 rotate-180" />
+              <Corner className="bottom-0 left-0 -rotate-90" />
               {/* Bottom horizontal line - full width */}
               <div className="absolute bottom-0 -left-[100vw] -right-[100vw] h-[1px] bg-[rgba(235,234,250,0.08)]" />
               <LaunchButton />

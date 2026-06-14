@@ -1,22 +1,7 @@
 import { usePrivy, useWallets } from '@privy-io/react-auth'
 import { useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-
-// Corner decoration component
-function Corner({ className }: { className?: string }) {
-  return (
-    <svg
-      width="6"
-      height="6"
-      viewBox="0 0 6 6"
-      fill="none"
-      className={`absolute ${className}`}
-    >
-      <rect width="1" height="6" fill="white" />
-      <rect width="6" height="1" fill="white" />
-    </svg>
-  )
-}
+import { Corner } from '../ui'
 
 interface LaunchButtonProps {
   className?: string

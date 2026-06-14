@@ -1,19 +1,5 @@
 import { StaggerContainer, StaggerItem } from '../ui/ScrollAnimations'
-
-function CardCorner({ className, color = 'white' }: { className?: string; color?: string }) {
-  return (
-    <svg
-      width="6"
-      height="6"
-      viewBox="0 0 6 6"
-      fill="none"
-      className={`absolute ${className}`}
-    >
-      <rect width="1" height="6" fill={color} />
-      <rect width="6" height="1" fill={color} />
-    </svg>
-  )
-}
+import { Corner } from '../ui'
 
 const roadmapItems = [
   {
@@ -148,11 +134,11 @@ export default function RoadmapSection() {
               }}
             >
             {/* Top corners on all cards */}
-            <CardCorner className="top-0 left-0 z-10" color={index === 0 ? '#848de8' : 'white'} />
+            <Corner className="top-0 left-0 z-10" color={index === 0 ? '#848de8' : 'white'} />
 
             {/* Bottom corner only on first and last */}
-            {index === 0 && <CardCorner className="bottom-0 left-0 -rotate-90 z-10" />}
-            {index === roadmapItems.length - 1 && <CardCorner className="bottom-0 right-0 rotate-180 z-10" />}
+            {index === 0 && <Corner className="bottom-0 left-0 -rotate-90 z-10" />}
+            {index === roadmapItems.length - 1 && <Corner className="bottom-0 right-0 rotate-180 z-10" />}
 
             {/* Header */}
             <div
@@ -166,7 +152,7 @@ export default function RoadmapSection() {
               }}
             >
 
-              <CardCorner className="bottom-0 right-0 z-10 rotate-180" color={index === 0 ? '#848de8' : 'white'} />
+              <Corner className="bottom-0 right-0 z-10 rotate-180" color={index === 0 ? '#848de8' : 'white'} />
 
               {/* Arrow SVG - only on first card, positioned top-right */}
               {index === 0 && (
@@ -211,10 +197,10 @@ export default function RoadmapSection() {
                     background: index === 0 ? 'rgba(132, 141, 232, 0.04)' : 'rgba(215, 218, 255, 0.04)',
                   }}
                 >
-                  <CardCorner className="top-0 left-0" color={index === 0 ? '#848DE8' : '#D7DAFF'} />
-                  <CardCorner className="top-0 right-0 rotate-90" color={index === 0 ? '#848DE8' : '#D7DAFF'} />
-                  <CardCorner className="bottom-0 right-0 rotate-180" color={index === 0 ? '#848DE8' : '#D7DAFF'} />
-                  <CardCorner className="bottom-0 left-0 -rotate-90" color={index === 0 ? '#848DE8' : '#D7DAFF'} />
+                  <Corner className="top-0 left-0" color={index === 0 ? '#848DE8' : '#D7DAFF'} />
+                  <Corner className="top-0 right-0 rotate-90" color={index === 0 ? '#848DE8' : '#D7DAFF'} />
+                  <Corner className="bottom-0 right-0 rotate-180" color={index === 0 ? '#848DE8' : '#D7DAFF'} />
+                  <Corner className="bottom-0 left-0 -rotate-90" color={index === 0 ? '#848DE8' : '#D7DAFF'} />
                   <span
                     className="font-primary text-[12px] md:text-[14px] font-medium leading-[143%] tracking-[0.01em] text-center"
                     style={{ color: index === 0 ? '#848de8' : '#d7daff' }}

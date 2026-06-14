@@ -1,21 +1,6 @@
 import DecoratedContainer from '../ui/DecoratedContainer'
 import { AnimatedSection, fadeInUp } from '../ui/ScrollAnimations'
-
-// Red corner for Problem badge
-function RedCorner({ className }: { className?: string }) {
-  return (
-    <svg
-      width="6"
-      height="6"
-      viewBox="0 0 6 6"
-      fill="none"
-      className={`absolute ${className}`}
-    >
-      <rect width="1" height="6" fill="#c73434" />
-      <rect width="6" height="1" fill="#c73434" />
-    </svg>
-  )
-}
+import { Corner } from '../ui'
 
 export default function SpeedGapSection() {
   return (
@@ -60,7 +45,7 @@ export default function SpeedGapSection() {
       </div>
 
 
-      <DecoratedContainer id="speed-gap" className="min-h-[200px] md:min-h-[250px] py-[90px]">
+      <DecoratedContainer className="min-h-[200px] md:min-h-[250px] py-[90px]">
         {/* Horizontal lines - full container width */}
         <div className="absolute top-[90px] left-0 w-full h-[1px] bg-[rgba(235,234,250,0.08)]" />
         <div className="absolute bottom-[90px] left-0 w-full h-[1px] bg-[rgba(235,234,250,0.08)]" />
@@ -95,10 +80,10 @@ export default function SpeedGapSection() {
               padding: '8px 13px',
             }}
           >
-            <RedCorner className="top-0 left-0" />
-            <RedCorner className="top-0 right-0 rotate-90" />
-            <RedCorner className="bottom-0 right-0 rotate-180" />
-            <RedCorner className="bottom-0 left-0 -rotate-90" />
+            <Corner className="top-0 left-0" color="#c73434" />
+            <Corner className="top-0 right-0 rotate-90" color="#c73434" />
+            <Corner className="bottom-0 right-0 rotate-180" color="#c73434" />
+            <Corner className="bottom-0 left-0 -rotate-90" color="#c73434" />
 
             <div className="flex items-center gap-2">
               {/* Line */}

@@ -1,10 +1,10 @@
-import { Routes, Route } from 'react-router-dom'
-import HomePage from './pages/HomePage'
-import DashboardPage from './pages/DashboardPage'
-import WalletPage from './pages/WalletPage'
-import AutomationPage from './pages/AutomationPage'
-import AdminPage from './pages/AdminPage'
-import { ProtectedRoute } from './components/auth/ProtectedRoute'
+import { Routes, Route } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import DashboardPage from './pages/DashboardPage';
+import WalletPage from './pages/WalletPage';
+import AutomationPage from './pages/AutomationPage';
+import AdminPage from './pages/AdminPage';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
 function App() {
   return (
@@ -34,9 +34,9 @@ function App() {
           </ProtectedRoute>
         }
       />
-      <Route path="/admin/ssznfivwxiGTpgMbklJltTnJLgBORDXe" element={<AdminPage />} />
+      <Route path="/admin" element={<AdminPage />} />
     </Routes>
-  )
+  );
 }
 
-export default App
+export default App;

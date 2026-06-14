@@ -1,19 +1,5 @@
 import { StaggerContainer, StaggerItem } from '../ui/ScrollAnimations'
-
-function CardCorner({ className }: { className?: string }) {
-  return (
-    <svg
-      width="6"
-      height="6"
-      viewBox="0 0 6 6"
-      fill="none"
-      className={`absolute ${className}`}
-    >
-      <rect width="1" height="6" fill="white" />
-      <rect width="6" height="1" fill="white" />
-    </svg>
-  )
-}
+import { Corner } from '../ui'
 
 const steps = [
   {
@@ -128,10 +114,10 @@ export default function HowItWorksSection() {
               />
 
               {/* Card corners */}
-              <CardCorner className="top-0 left-0 z-10" />
-              <CardCorner className="top-0 right-0 rotate-90 z-10" />
-              <CardCorner className="bottom-0 right-0 rotate-180 z-10" />
-              <CardCorner className="bottom-0 left-0 -rotate-90 z-10" />
+              <Corner className="top-0 left-0 z-10" />
+              <Corner className="top-0 right-0 rotate-90 z-10" />
+              <Corner className="bottom-0 right-0 rotate-180 z-10" />
+              <Corner className="bottom-0 left-0 -rotate-90 z-10" />
 
               {/* Left side - number and title */}
               <div className="relative z-10 flex-1 flex flex-col justify-between">
@@ -145,10 +131,10 @@ export default function HowItWorksSection() {
                     background: 'rgba(132, 141, 232, 0.04)',
                   }}
                 >
-                  <CardCorner className="top-0 left-0" />
-                  <CardCorner className="top-0 right-0 rotate-90" />
-                  <CardCorner className="bottom-0 right-0 rotate-180" />
-                  <CardCorner className="bottom-0 left-0 -rotate-90" />
+                  <Corner className="top-0 left-0" />
+                  <Corner className="top-0 right-0 rotate-90" />
+                  <Corner className="bottom-0 right-0 rotate-180" />
+                  <Corner className="bottom-0 left-0 -rotate-90" />
                   <span className="font-primary text-[14px] font-medium leading-[143%] tracking-[0.01em] text-[#ebedff]">{step.number}</span>
                 </div>
 

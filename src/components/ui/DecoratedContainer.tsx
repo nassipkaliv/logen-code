@@ -1,4 +1,3 @@
-// Decorative dot pattern for borders
 function BorderDots({ position, id }: { position: 'left' | 'right'; id: string }) {
   return (
     <div
@@ -18,7 +17,6 @@ function BorderDots({ position, id }: { position: 'left' | 'right'; id: string }
   )
 }
 
-// Corner decoration component
 function SectionCorner({ position }: { position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' }) {
   const positionClasses = {
     'top-left': '-top-[1px] -left-[6px]',
@@ -51,9 +49,6 @@ function SectionCorner({ position }: { position: 'top-left' | 'top-right' | 'bot
 interface DecoratedContainerProps {
   children: React.ReactNode
   className?: string
-  id?: string
-  showDots?: boolean
-  showCorners?: boolean
 }
 
 export default function DecoratedContainer({
@@ -61,9 +56,7 @@ export default function DecoratedContainer({
   className = '',
 }: DecoratedContainerProps) {
   return (
-    <div
-      className={`relative max-w-[1310px] mx-auto ${className}`}
-    >
+    <div className={`relative max-w-[1310px] mx-auto ${className}`}>
       {children}
     </div>
   )

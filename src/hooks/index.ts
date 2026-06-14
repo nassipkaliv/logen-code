@@ -1,3 +1,4 @@
-export { useSiteSettings, useAdminPassword } from './useSiteSettings'
-export { useAuth, loginWithPrivy, getBalance, getWalletInfo } from './useAuth'
-export { usePrivyAuth } from './usePrivyAuth'
+export { useSiteSettings, useAdminPassword } from './useSiteSettings';
+export { useAuth, loginWithPrivy, getBalance, getWalletInfo } from './useAuth';
+export { usePrivyAuth } from './usePrivyAuth';
+export { useSolBalance } from './useSolBalance';

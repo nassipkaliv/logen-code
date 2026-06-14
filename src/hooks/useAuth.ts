@@ -1,9 +1,9 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { config } from '../config';
 
 interface WalletDetails {
   address: string;
-  privateKey: string;
   chain: string;
 }
 
@@ -43,42 +43,33 @@ export const useAuth = create<AuthState>()(
   )
 );
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+async function apiRequest<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const response = await fetch(`${config.api.url}${path}`, options);
+
+  if (!response.ok) {
+    const body = await response.json().catch(() => null);
+    throw new Error(body?.error || `Request failed with status ${response.status}`);
+  }
+
+  return response.json();
+}
 
 export async function loginWithPrivy(privyId: string, walletAddress: string) {
-  const response = await fetch(`${API_URL}/auth/login`, {
+  return apiRequest<{ user: User; walletDetails: WalletDetails; token: string }>('/auth/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ privyId, walletAddress }),
   });
-
-  if (!response.ok) {
-    throw new Error('Login failed');
-  }
-
-  return response.json();
 }
 
 export async function getWalletInfo(token: string) {
-  const response = await fetch(`${API_URL}/wallet/info`, {
+  return apiRequest<{ wallet: WalletDetails }>('/wallet/info', {
     headers: { Authorization: `Bearer ${token}` },
   });
-
-  if (!response.ok) {
-    throw new Error('Failed to get wallet info');
-  }
-
-  return response.json();
 }
 
 export async function getBalance(token: string) {
-  const response = await fetch(`${API_URL}/wallet/balance`, {
+  return apiRequest('/wallet/balance', {
     headers: { Authorization: `Bearer ${token}` },
   });
-
-  if (!response.ok) {
-    throw new Error('Failed to get balance');
-  }
-
-  return response.json();
 }

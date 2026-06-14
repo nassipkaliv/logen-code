@@ -1,5 +1,5 @@
 import { usePrivy, useWallets } from '@privy-io/react-auth';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useAuth, loginWithPrivy } from './useAuth';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,32 +8,33 @@ export function usePrivyAuth() {
   const { wallets } = useWallets();
   const { setAuth, logout, ...authState } = useAuth();
   const navigate = useNavigate();
+  const loginInProgress = useRef(false);
 
   useEffect(() => {
-    if (authenticated && user && !authState.isAuthenticated) {
+    if (authenticated && user && !authState.isAuthenticated && !loginInProgress.current) {
       const privyId = user.id;
-      const walletAddress = user.wallet?.address ||
-                           wallets[0]?.address ||
-                           null;
-      
+      const walletAddress = user.wallet?.address || wallets[0]?.address || null;
+
       if (walletAddress) {
-        loginWithPrivy(privyId, walletAddress).then((data) => {
-          setAuth(data.user, data.walletDetails, data.token);
-          navigate('/dashboard');
-        }).catch((err) => {
-          console.error('Backend error:', err);
-        });
+        loginInProgress.current = true;
+        loginWithPrivy(privyId, walletAddress)
+          .then((data) => {
+            const walletDetails = data.user?.wallet || { address: '', chain: 'solana' };
+            setAuth(data.user, walletDetails, data.token);
+            navigate('/dashboard');
+          })
+          .catch(() => {
+            // Backend login failed; user remains on current page
+          })
+          .finally(() => {
+            loginInProgress.current = false;
+          });
       }
     }
-  }, [authenticated, user, wallets, authState.isAuthenticated, navigate]);
+  }, [authenticated, user, wallets, authState.isAuthenticated, navigate, setAuth]);
 
   const loginWithWallet = useCallback(async () => {
-    try {
-      await login();
-    } catch (error) {
-      console.error('Login error:', error);
-      throw error;
-    }
+    await login();
   }, [login]);
 
   const logoutAll = useCallback(async () => {

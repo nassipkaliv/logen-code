@@ -1,79 +1,34 @@
-import { useState, useEffect } from 'react'
-import { Connection, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js'
-import { useAuth } from '../hooks/useAuth'
-import { DashboardLayout } from '../components/dashboard'
-import { Corner, PlusCorner } from '../components/ui'
-import { InputField, ActionButton, BalanceField, UsageRow, WithdrawModal } from '../components/wallet'
-
-// Solana RPC endpoint (Mainnet - publicnode)
-const RPC_ENDPOINT = 'https://solana.publicnode.com'
+import { useState } from 'react';
+import { useAuth } from '../hooks/useAuth';
+import { useSolBalance } from '../hooks/useSolBalance';
+import { DashboardLayout } from '../components/dashboard';
+import { Corner, PlusCorner } from '../components/ui';
+import { InputField, ActionButton, BalanceField, UsageRow, WithdrawModal } from '../components/wallet';
 
 export default function WalletPage() {
-  const { walletDetails, isAuthenticated } = useAuth()
-  const [highlightPublicKey, setHighlightPublicKey] = useState(false)
-  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false)
-  const [solBalance, setSolBalance] = useState<number | null>(null)
-  const [loadingBalance, setLoadingBalance] = useState(false)
+  const { walletDetails, isAuthenticated } = useAuth();
+  const { balance: solBalance, loading: loadingBalance } = useSolBalance(walletDetails?.address);
+  const [highlightPublicKey, setHighlightPublicKey] = useState(false);
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
 
-  const walletAddress = walletDetails?.address || ''
-  const privateKey = walletDetails?.privateKey || ''
+  const walletAddress = walletDetails?.address || '';
 
-  // Fetch balance directly from Solana
-  const fetchBalance = async () => {
-    if (!walletAddress) return
-    setLoadingBalance(true)
-    
-    try {
-      const connection = new Connection(RPC_ENDPOINT, 'confirmed')
-      const publicKey = new PublicKey(walletAddress)
-      
-      // Add timeout wrapper
-      const lamports = await Promise.race([
-        connection.getBalance(publicKey),
-        new Promise<number>((_, reject) => 
-          setTimeout(() => reject(new Error('RPC timeout')), 10000)
-        )
-      ])
-      
-      const balance = lamports / LAMPORTS_PER_SOL
-      setSolBalance(balance)
-    } catch (error: any) {
-      setSolBalance(null)
-    }
-    
-    setLoadingBalance(false)
-  }
-  
-  // Initial fetch on mount
-  useEffect(() => {
-    if (!walletAddress) return;
-    fetchBalance()
-  }, [walletAddress])
+  const displayPublicKey = walletAddress
+    ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`
+    : 'No wallet';
 
-  // Форматируем для отображения (короткий)
-  const displayPublicKey = walletAddress 
-    ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}` 
-    : 'No wallet'
-
-  // Форматируем для копирования (полный)
-  const copyPublicKey = walletAddress || ''
-
-  const formatSolBalance = (balance: number | null) => {
-    if (balance === null) return 'RPC Error'
-    const formatted = balance >= 1 
-      ? balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 })
-      : balance.toFixed(4)
-    return `${formatted} SOL`
-  }
+  const formatSolBalance = (b: number | null) => {
+    if (b === null) return 'Loading...';
+    const formatted = b >= 1
+      ? b.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 })
+      : b.toFixed(4);
+    return `${formatted} SOL`;
+  };
 
   const handleDeposit = () => {
-    setHighlightPublicKey(true)
-    setTimeout(() => setHighlightPublicKey(false), 2000)
-  }
-
-  const handleWithdraw = () => {
-    setIsWithdrawModalOpen(true)
-  }
+    setHighlightPublicKey(true);
+    setTimeout(() => setHighlightPublicKey(false), 2000);
+  };
 
   if (!isAuthenticated || !walletDetails) {
     return (
@@ -84,7 +39,7 @@ export default function WalletPage() {
           </div>
         </div>
       </DashboardLayout>
-    )
+    );
   }
 
   return (
@@ -96,15 +51,12 @@ export default function WalletPage() {
       />
       <div className="mx-4 sm:mx-6 md:mx-[40px] pt-6 sm:pt-8 md:pt-10 pb-0">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10">
-          {/* Left column */}
           <div className="relative">
-            {/* Vertical divider line - hidden on mobile */}
             <div className="hidden lg:block absolute right-0 top-[-40px] bottom-0 w-[1px] bg-[rgba(235,234,250,0.08)]" />
             <div className="absolute top-0 left-0 right-0 h-[1px] bg-[rgba(235,234,250,0.08)]" />
 
             <PlusCorner className="hidden sm:block top-[-5px] right-[-5px]" />
 
-            {/* Internal Wallet */}
             <div
               className="relative p-4 sm:p-5"
               style={{
@@ -124,20 +76,13 @@ export default function WalletPage() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-[15px] mb-3 sm:mb-[15px]">
-                <InputField 
-                  label="Public Key:" 
+                <InputField
+                  label="Public Key:"
                   value={displayPublicKey}
-                  copyValue={copyPublicKey}
-                  icon="copy" 
-                  highlight={highlightPublicKey} 
+                  copyValue={walletAddress}
+                  icon="copy"
+                  highlight={highlightPublicKey}
                 />
-                {privateKey && (
-                  <InputField 
-                    label="Private Key:" 
-                    value={privateKey} 
-                    icon="copy" 
-                  />
-                )}
               </div>
 
               <div className="mb-4 sm:mb-5">
@@ -148,20 +93,19 @@ export default function WalletPage() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4 sm:mb-6">
-                <BalanceField 
-                  label="Available Balance:" 
-                  value={loadingBalance ? 'Loading...' : formatSolBalance(solBalance)} 
+                <BalanceField
+                  label="Available Balance:"
+                  value={loadingBalance ? 'Loading...' : formatSolBalance(solBalance)}
                 />
                 <BalanceField label="Locked in strategies:" value="0.00 SOL" />
               </div>
 
               <div className="flex gap-3">
                 <ActionButton variant="deposit" onClick={handleDeposit}>Deposit</ActionButton>
-                <ActionButton variant="withdraw" onClick={handleWithdraw}>Withdraw</ActionButton>
+                <ActionButton variant="withdraw" onClick={() => setIsWithdrawModalOpen(true)}>Withdraw</ActionButton>
               </div>
             </div>
 
-            {/* Automation Usage Indicator */}
             <div className="relative mt-6 sm:mt-[40px]">
               <div
                 className="relative p-4 sm:p-5"
@@ -199,7 +143,6 @@ export default function WalletPage() {
             </div>
           </div>
 
-          {/* Right column - Wallet illustration */}
           <div
             className="relative"
             style={{
@@ -213,14 +156,9 @@ export default function WalletPage() {
             <PlusCorner className="hidden sm:block bottom-[-5px] left-[-5px]" />
 
             <div className="flex justify-center">
-              <img
-                src="/assets/img/walletbg.png"
-                alt="Wallet illustration"
-                className="w-full"
-              />
+              <img src="/assets/img/walletbg.png" alt="Wallet illustration" className="w-full" />
             </div>
 
-            {/* Text section */}
             <div className="relative pb-6 sm:pb-[40px]">
               <div className="absolute top-0 left-0 right-0 h-[1px] bg-[rgba(235,234,250,0.08)]" />
               <div className="hidden sm:block absolute bottom-[40px] left-0 right-0 h-[1px] bg-[rgba(235,234,250,0.08)]" />
@@ -231,7 +169,6 @@ export default function WalletPage() {
               <PlusCorner className="hidden sm:block bottom-[-5px] right-[-5px]" />
 
               <div className="relative max-w-[410px] mx-auto px-4 sm:px-0 pt-4 pb-4">
-                {/* Info Hint badge */}
                 <div className="absolute left-1/2 -translate-x-1/2 -top-8 sm:-top-12 z-10">
                   <div
                     className="relative inline-block px-2 sm:px-3 py-1.5 sm:py-2 font-primary text-xs sm:text-sm font-medium text-[#ebedff] leading-[143%] tracking-[0.01em]"
@@ -250,7 +187,6 @@ export default function WalletPage() {
                   </div>
                 </div>
 
-                {/* Vertical lines - hidden on mobile */}
                 <div className="hidden sm:block absolute left-0 -top-9 -bottom-6 w-[1px] bg-[rgba(235,234,250,0.08)]" />
                 <div className="hidden sm:block absolute right-0 -top-9 -bottom-6 w-[1px] bg-[rgba(235,234,250,0.08)]" />
                 <div className="hidden sm:block absolute top-0 left-0 right-0 h-[1px] bg-[rgba(235,234,250,0.08)]" />
@@ -267,9 +203,9 @@ export default function WalletPage() {
                     WebkitTextFillColor: 'transparent',
                   }}
                 >
-                  This wallet is used by <br/>
-                  Logen to execute <br/>
-                  your automated<br/>
+                  This wallet is used by <br />
+                  Logen to execute <br />
+                  your automated<br />
                   strategies
                 </h2>
               </div>
@@ -277,16 +213,11 @@ export default function WalletPage() {
           </div>
         </div>
 
-        {/* Bottom image section */}
         <div className="relative mt-6 sm:mt-10">
           <div className="absolute top-0 left-0 right-0 h-[1px] bg-[rgba(235,234,250,0.08)]" />
-          <img
-            src="/assets/img/dashboardbottombg.png"
-            alt="Dashboard bottom"
-            className="w-full"
-          />
+          <img src="/assets/img/dashboardbottombg.png" alt="Dashboard bottom" className="w-full" />
         </div>
       </div>
     </DashboardLayout>
-  )
+  );
 }

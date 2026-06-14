@@ -1,19 +1,5 @@
 import { StaggerContainer, StaggerItem } from '../ui/ScrollAnimations'
-
-function CardCorner({ className }: { className?: string }) {
-  return (
-    <svg
-      width="6"
-      height="6"
-      viewBox="0 0 6 6"
-      fill="none"
-      className={`absolute ${className}`}
-    >
-      <rect width="1" height="6" fill="white" />
-      <rect width="6" height="1" fill="white" />
-    </svg>
-  )
-}
+import { Corner } from '../ui'
 
 const useCases = [
   {
@@ -105,10 +91,10 @@ export default function VisualUseCasesSection() {
                 }}
               >
               {/* Card corners */}
-              <CardCorner className="top-0 left-0 z-10" />
-              <CardCorner className="top-0 right-0 rotate-90 z-10" />
-              <CardCorner className="bottom-0 right-0 rotate-180 z-10" />
-              <CardCorner className="bottom-0 left-0 -rotate-90 z-10" />
+              <Corner className="top-0 left-0 z-10" />
+              <Corner className="top-0 right-0 rotate-90 z-10" />
+              <Corner className="bottom-0 right-0 rotate-180 z-10" />
+              <Corner className="bottom-0 left-0 -rotate-90 z-10" />
 
               {/* Image */}
               <div className="w-full">

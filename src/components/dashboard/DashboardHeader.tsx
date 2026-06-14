@@ -1,23 +1,7 @@
-import { useUser, useLogout } from '@privy-io/react-auth'
-import { useMemo, useState } from 'react'
-import { Link, NavLink, useNavigate } from 'react-router-dom'
-
-
-function Corner({ className }: { className?: string }) {
-  return (
-    <svg
-      width="6"
-      height="6"
-      viewBox="0 0 6 6"
-      fill="none"
-      className={`absolute ${className}`}
-    >
-      <rect width="1" height="6" fill="white" />
-      <rect width="6" height="1" fill="white" />
-    </svg>
-  )
-}
-
+import { useUser, useLogout } from '@privy-io/react-auth';
+import { useMemo, useState } from 'react';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Corner } from '../ui';
 
 function HeaderCorner({ className }: { className?: string }) {
   return (
@@ -34,7 +18,7 @@ function HeaderCorner({ className }: { className?: string }) {
       </mask>
       <path d="M11 6L11 5L4.37114e-07 5L5.24537e-07 6L6.11959e-07 7L11 7L11 6Z" fill="white" mask="url(#path-2-inside-header)" />
     </svg>
-  )
+  );
 }
 
 function HeaderButton({
@@ -43,62 +27,57 @@ function HeaderButton({
   ...props
 }: React.ComponentProps<'button'> & { children: React.ReactNode }) {
   return (
-    <button
-      className={`relative header-btn ${className}`}
-      {...props}
-    >
+    <button className={`relative header-btn ${className}`} {...props}>
       <Corner className="top-0 left-0" />
       <Corner className="top-0 right-0 rotate-90" />
       <Corner className="bottom-0 right-0 rotate-180" />
       <Corner className="bottom-0 left-0 -rotate-90" />
       {children}
     </button>
-  )
+  );
 }
 
 const navItems = [
   { label: 'Main', to: '/dashboard' },
   { label: 'Wallet', to: '/dashboard/wallet' },
   { label: 'Automation Studio', to: '/dashboard/automation' },
-]
+];
 
 export default function DashboardHeader() {
-  const { user } = useUser()
-  const { logout } = useLogout()
-  const [showLogout, setShowLogout] = useState(false)
-  const navigate = useNavigate()
+  const { user } = useUser();
+  const { logout } = useLogout();
+  const [showLogout, setShowLogout] = useState(false);
+  const navigate = useNavigate();
 
   const walletInfo = useMemo(() => {
-    // Get Solana address from user.wallet
-    const solanaWallet = user?.wallet
+    const solanaWallet = user?.wallet;
 
     if (solanaWallet?.address && solanaWallet.chainType === 'solana') {
       return {
         type: 'solana',
         address: solanaWallet.address,
-        displayAddress: `${solanaWallet.address.slice(0, 4)}...${solanaWallet.address.slice(-4)}`
-      }
+        displayAddress: `${solanaWallet.address.slice(0, 4)}...${solanaWallet.address.slice(-4)}`,
+      };
     }
 
-    return { type: null, address: null, displayAddress: 'Not connected' }
-  }, [user])
+    return { type: null, address: null, displayAddress: 'Not connected' };
+  }, [user]);
 
   const handleWalletClick = () => {
     if (walletInfo.address) {
-      setShowLogout(!showLogout)
+      setShowLogout(!showLogout);
     }
-  }
+  };
 
   const handleLogout = async () => {
     try {
-      await logout()
-    } catch (error) {
-      console.log('Logout error (ignoring):', error)
+      await logout();
+    } catch {
+      // Privy logout errors are non-critical
     }
-    setShowLogout(false)
-
-    navigate('/')
-  }
+    setShowLogout(false);
+    navigate('/');
+  };
 
   return (
     <div className="w-full relative z-50 mt-2 sm:mt-3 md:mt-[15px] px-2 sm:px-4 md:px-0">
@@ -110,7 +89,6 @@ export default function DashboardHeader() {
           background: 'rgba(1, 1, 14, 0.8)',
         }}
       >
-        {/* Header corners - hidden on mobile */}
         <HeaderCorner className="hidden sm:block -bottom-[3px] -left-[5px] rotate-180" />
         <HeaderCorner className="hidden sm:block -bottom-[3px] -right-[5px] -scale-x-100 rotate-180" />
         <HeaderCorner className="hidden sm:block -top-[3px] -left-[5px]" />
@@ -118,11 +96,10 @@ export default function DashboardHeader() {
 
         <div className="relative flex items-center justify-between h-12 sm:h-14 md:h-16 px-3 sm:px-4 md:px-6">
           <Link to="/" className="flex items-center gap-1.5 sm:gap-2 md:gap-[10px] shrink-0">
-            <img src="/assets/img/logo.png" alt="logo"  />
+            <img src="/assets/img/logo.png" alt="logo" />
             <span className="font-mono text-white font-semibold text-sm sm:text-sm md:text-base lg:text-lg uppercase">LOGEN</span>
           </Link>
 
-          {/* Desktop navigation - absolutely centered */}
           <nav className="hidden lg:flex items-center gap-5 xl:gap-[30px] absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
             {navItems.map((item) => (
               <NavLink
@@ -131,9 +108,7 @@ export default function DashboardHeader() {
                 end={item.to === '/dashboard'}
                 className={({ isActive }) =>
                   `font-primary py-2 text-sm font-normal tracking-[0.01em] transition-colors whitespace-nowrap ${
-                    isActive
-                      ? 'text-[#848de8]'
-                      : 'text-[#b2b2b4] hover:text-[#848de8]'
+                    isActive ? 'text-[#848de8]' : 'text-[#b2b2b4] hover:text-[#848de8]'
                   }`
                 }
               >
@@ -142,7 +117,6 @@ export default function DashboardHeader() {
             ))}
           </nav>
 
-          {/* Wallet section */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 relative">
             <span className="hidden lg:block text-[#b2b2b4] text-sm font-primary tracking-[0.01em]">
               Wallet connected:
@@ -151,7 +125,7 @@ export default function DashboardHeader() {
               onClick={handleWalletClick}
               className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 sm:py-2 font-primary text-[10px] sm:text-xs md:text-sm font-medium text-[#ebedff] leading-[143%] tracking-[0.01em]"
             >
-              <svg className="w-3 h-2.5 sm:w-[15px] sm:h-3" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg className="w-3 h-2.5 sm:w-[15px] sm:h-3" viewBox="0 0 15 12" fill="none">
                 <g clipPath="url(#clip0_2_12197)">
                   <path d="M2.43692 9.15925C2.52867 9.06565 2.65307 9.01308 2.78277 9.01308H14.75C14.968 9.01308 15.0772 9.28221 14.9229 9.43956L12.5582 11.8521C12.4665 11.9457 12.3421 11.9983 12.2124 11.9983H0.24514C0.0271337 11.9983 -0.0819995 11.7291 0.0722154 11.5717L2.43692 9.15925Z" fill="#EBEDFF" />
                   <path d="M2.43692 0.146185C2.52867 0.0525802 2.65307 0 2.78277 0L14.75 0C14.968 0 15.0772 0.269162 14.9229 0.426493L12.5582 2.839C12.4665 2.9326 12.3421 2.98518 12.2124 2.98518L0.24514 2.98518C0.0271337 2.98518 -0.0819995 2.71602 0.0722154 2.55869L2.43692 0.146185Z" fill="#EBEDFF" />
@@ -166,8 +140,7 @@ export default function DashboardHeader() {
               <span className="hidden xs:inline sm:inline">{walletInfo.displayAddress}</span>
               <span className="inline xs:hidden sm:hidden">Wallet</span>
             </HeaderButton>
-            
-            {/* Logout button */}
+
             {showLogout && (
               <div className="absolute top-full right-0 mt-2 bg-[#1a1a2e] border border-[rgba(132,141,232,0.3)] rounded-lg p-2 shadow-lg z-50">
                 <button
@@ -181,7 +154,6 @@ export default function DashboardHeader() {
           </div>
         </div>
 
-        {/* Mobile/Tablet navigation */}
         <nav className="lg:hidden flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-3 pb-2 sm:pb-3 border-t border-[rgba(235,234,250,0.08)]">
           {navItems.map((item) => (
             <NavLink
@@ -190,9 +162,7 @@ export default function DashboardHeader() {
               end={item.to === '/dashboard'}
               className={({ isActive }) =>
                 `relative px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 font-primary text-[10px] sm:text-xs md:text-sm font-normal tracking-[0.01em] transition-colors whitespace-nowrap ${
-                  isActive
-                    ? 'text-[#848de8]'
-                    : 'text-[#6c6c6e] hover:text-white'
+                  isActive ? 'text-[#848de8]' : 'text-[#6c6c6e] hover:text-white'
                 }`
               }
             >
@@ -202,5 +172,5 @@ export default function DashboardHeader() {
         </nav>
       </header>
     </div>
-  )
+  );
 }

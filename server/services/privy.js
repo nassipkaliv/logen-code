@@ -1,13 +1,3 @@
-import { config } from 'dotenv';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-// Load .env from server directory (parent of services/)
-config({ path: join(__dirname, '..', '.env') });
-
 import { PrivyClient } from '@privy-io/node';
 
 const PRIVY_APP_ID = process.env.PRIVY_APP_ID;
@@ -22,7 +12,6 @@ const privyClient = new PrivyClient({
   apiKey: PRIVY_APP_SECRET,
 });
 
-// Верифицировать privyToken и получить пользователя
 export async function verifyPrivyToken(token) {
   try {
     const verifiedClaims = await privyClient.verifyToken(token);
@@ -33,7 +22,6 @@ export async function verifyPrivyToken(token) {
   }
 }
 
-// Получить пользователя по ID
 export async function getUserById(userId) {
   try {
     const user = await privyClient.getUser(userId);
